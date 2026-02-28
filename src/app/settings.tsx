@@ -6,7 +6,7 @@ export default function Index() {
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
-        <Heading>Home</Heading>
+        <Heading>Settings</Heading>
       </View>
     </BackgroundWrapper>
   );

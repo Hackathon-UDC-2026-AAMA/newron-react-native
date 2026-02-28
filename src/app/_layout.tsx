@@ -1,11 +1,11 @@
 import { customTheme } from "@/config/theme";
-import { Stack } from "expo-router";
 import { PaperProvider } from "react-native-paper";
+import { TabNavigator } from "@/routing/tab-navigator";
 
 export default function RootLayout() {
   return (
     <PaperProvider theme={customTheme}>
-      <Stack screenOptions={{ headerShown: false }} />
+      <TabNavigator />
     </PaperProvider>
   );
 }
