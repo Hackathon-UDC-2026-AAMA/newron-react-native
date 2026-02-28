@@ -8,26 +8,34 @@ const apiClient = axios.create({
   timeout: 10000,
 });
 
-// Interceptor para logs automáticos (opcional)
 apiClient.interceptors.request.use(
   (config) => {
-    console.log("📤 Enviando petición:", config.method?.toUpperCase(), config.url);
+    const method = config.method?.toUpperCase();
+    const url = config.url;
+
+    console.log(`➡️ [REQUEST] ${method} ${url}`);
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error("❌ [REQUEST ERROR]", error);
+    return Promise.reject(error);
+  }
 );
 
-//Interceptor para respuestas
 apiClient.interceptors.response.use(
   (response) => {
-    console.log("📥 Respuesta recibida:", response.status);
+    const method = response.config.method?.toUpperCase();
+    const url = response.config.url;
+
+    console.log(`✅ [RESPONSE] ${method} ${url} - ${response.status}`);
     return response;
   },
   (error) => {
-    console.log(
-      "❌ Error en respuesta:",
-      error.response?.data || error.message
-    );
+    const method = error.config?.method?.toUpperCase();
+    const url = error.config?.url;
+    const status = error.response?.status;
+
+    console.error(`🔥 [ERROR] ${method} ${url} - Status: ${status}`);
     return Promise.reject(error);
   }
 );
