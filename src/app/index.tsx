@@ -1,11 +1,10 @@
-import { getClusters } from "@/components/API/clusterService";
-import { getItems, groupItemsByCluster } from "@/components/API/itemService";
-import { sendIngest } from "@/components/API/ingestService";
+import { getClusters } from "@/API/clusterService";
+import { getItems, groupItemsByCluster } from "@/API/itemService";
+import { sendIngest } from "@/API/ingestService";
 import { BackgroundWrapper } from "@/components/layout/background-wrapper";
 import { Heading } from "@/components/ui/heading";
 import { useEffect, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
-import { Text } from "react-native-paper";
 
 export default function Index() {
   const [text, setText] = useState<string>("");
@@ -39,12 +38,8 @@ export default function Index() {
 
       const response = await sendIngest(text);
       console.log("Respuesta backend:", response);
-
     } catch (error: any) {
-      console.log(
-        "Error:",
-        error?.response?.data || error?.message
-      );
+      console.log("Error:", error?.response?.data || error?.message);
       Alert.alert("Error", "No se pudo enviar la petición");
     } finally {
       setLoading(false);
@@ -58,8 +53,7 @@ export default function Index() {
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
-        <Heading>Heading 1</Heading>
-        <Text>Edit src/app/index.tsx to edit this screen.</Text>
+        <Heading>Home</Heading>
       </View>
     </BackgroundWrapper>
   );
