@@ -1,6 +1,9 @@
+import { getClusters } from "@/components/API/clusterService";
+import { getItems, groupItemsByCluster } from "@/components/API/itemService";
 import { BackgroundWrapper } from "@/components/layout/background-wrapper";
 import { Heading } from "@/components/ui/heading";
-import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { View, StyleSheet, Alert } from "react-native";
 import { Text } from "react-native-paper";
 
 export default function Index() {
