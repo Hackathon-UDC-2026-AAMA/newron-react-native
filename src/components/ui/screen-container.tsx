@@ -6,7 +6,9 @@ import { BackgroundWrapper } from "../layout/background-wrapper";
 export const ScreenContainer = ({ children }: PropsWithChildren) => {
   return (
     <BackgroundWrapper>
-      <SafeAreaView style={styles.container}>{children}</SafeAreaView>
+      <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+        {children}
+      </SafeAreaView>
     </BackgroundWrapper>
   );
 };
