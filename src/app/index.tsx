@@ -7,15 +7,22 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { NoteBar } from "@/components/ui/noteBar";
 import { Brain } from "lucide-react-native";
-import { Text } from "react-native-paper";
-import { VoiceNote } from "@/components/ui/voiceNote";
 import React from "react";
-import RecordingList from "@/components/voiceRecord/AudioList";
-import Recorder from "@/components/voiceRecord/AudioRecorder";
+import { CategoryList } from "@/components/categoryList/categoryList";
 
 export default function Index() {
   const [text, setText] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+  const categories = [
+  { id: "1", content: "Trabajo" },
+  { id: "2", content: "Personal" },
+  { id: "3", content: "Ideas" },
+  { id: "4", content: "Perros" },
+  { id: "5", content: "Cocina" },
+
+];
+
 
   const fetchData = async () => {
     try {
@@ -62,6 +69,7 @@ export default function Index() {
         <Brain size={100} color="#FFF"/>
         <Heading>Newron</Heading>
         <NoteBar />
+        <CategoryList categories={categories} />
       </View>
     </BackgroundWrapper>
   );
