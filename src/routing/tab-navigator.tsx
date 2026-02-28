@@ -1,5 +1,10 @@
 import { Tabs } from "expo-router";
-import { Home, Settings, ChartBar } from "lucide-react-native";
+import {
+  Settings,
+  ChartBar,
+  NotepadText,
+  BrainCircuit,
+} from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 
@@ -24,15 +29,15 @@ export const TabNavigator = () => {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <Home size={28} color={color} />,
+          title: "My notes",
+          tabBarIcon: ({ color }) => <NotepadText size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="analytics"
+        name="my-newron"
         options={{
-          title: "Analytics",
-          tabBarIcon: ({ color }) => <ChartBar size={28} color={color} />,
+          title: "My Newron",
+          tabBarIcon: ({ color }) => <BrainCircuit size={28} color={color} />,
         }}
       />
       <Tabs.Screen
