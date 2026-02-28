@@ -1,17 +1,16 @@
-import { useEffect, useState } from 'react';
-import { View, StyleSheet, Button, Alert, Text } from 'react-native';
+import { useEffect, useState } from "react";
+import { View, StyleSheet, Button, Alert, Text } from "react-native";
 import {
   useAudioRecorder,
   AudioModule,
   RecordingPresets,
   setAudioModeAsync,
   useAudioRecorderState,
-} from 'expo-audio';
-import { File, Directory, Paths } from 'expo-file-system';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "expo-audio";
+import { File, Directory, Paths } from "expo-file-system";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Recorder() {
-
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(audioRecorder);
 
@@ -44,12 +43,12 @@ export default function Recorder() {
     };
 
     // Obtener grabaciones actuales
-    const stored = await AsyncStorage.getItem('recordings');
+    const stored = await AsyncStorage.getItem("recordings");
     const recordings = stored ? JSON.parse(stored) : [];
 
     recordings.unshift(newRecording);
 
-    await AsyncStorage.setItem('recordings', JSON.stringify(recordings));
+    await AsyncStorage.setItem("recordings", JSON.stringify(recordings));
 
     console.log("Guardado y persistido en AsyncStorage");
   };
@@ -58,7 +57,7 @@ export default function Recorder() {
     (async () => {
       const status = await AudioModule.requestRecordingPermissionsAsync();
       if (!status.granted) {
-        Alert.alert('Permission to access microphone was denied');
+        Alert.alert("Permission to access microphone was denied");
       }
 
       await setAudioModeAsync({
@@ -71,7 +70,7 @@ export default function Recorder() {
   return (
     <View style={styles.container}>
       <Button
-        title={recorderState.isRecording ? 'Stop Recording' : 'Start Recording'}
+        title={recorderState.isRecording ? "Stop Recording" : "Start Recording"}
         onPress={recorderState.isRecording ? stopRecording : record}
       />
 
@@ -91,19 +90,19 @@ export default function Recorder() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
+    justifyContent: "center",
+    backgroundColor: "#ecf0f1",
     padding: 20,
   },
   infoContainer: {
     marginTop: 20,
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 10,
   },
   value: {
     fontSize: 12,
-    color: '#555',
+    color: "#555",
   },
 });
