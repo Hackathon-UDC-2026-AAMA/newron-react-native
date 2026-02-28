@@ -7,22 +7,29 @@ import {
     KeyboardAvoidingView,
     Platform,
     Dimensions,
+    ToastAndroid,
+    Alert,
 } from "react-native";
 import { Mic, Send, Paperclip } from "lucide-react-native";
-import * as DocumentPicker from "expo-document-picker";
+import { useAudioRecorderHook } from "../voiceRecord/useAudioRecorderHook";
+import { sendIngestAudio } from "@/API/ingestService";
+import * as DocumentPicker from 'expo-document-picker';
 
 const { width } = Dimensions.get("window");
-const BAR_WIDTH = width * 0.9;
+const BAR_WIDTH = width * 0.8;
 
 export const NoteBar: React.FC = () => {
     const [text, setText] = useState("");
+
+    const { startRecording, stopRecording, isRecording } =
+        useAudioRecorderHook();
 
     const hasText = text.trim().length > 0;
 
     const pickFile = async () => {
         try {
             const result = await DocumentPicker.getDocumentAsync({
-                type: "*/*", // cualquier tipo de archivo
+                type: "*/*",
                 copyToCacheDirectory: true,
                 multiple: false,
             });
@@ -41,6 +48,50 @@ export const NoteBar: React.FC = () => {
         }
     };
 
+    const handleActionPress = async () => {
+        if (hasText) {
+            console.log("Enviar mensaje:", text);
+            setText("");
+            return;
+        }
+
+        if (!isRecording) {
+            await startRecording();
+            return;
+        }
+
+        const recording = await stopRecording();
+
+        if (!recording) return;
+
+        try {
+            console.log("📤 Enviando audio al backend...");
+
+            const response = await sendIngestAudio(recording.uri);
+
+            console.log("✅ Respuesta ingest-audio:", response);
+
+            if (Platform.OS === "android") {
+                ToastAndroid.show(
+                    "Nota de audio guardada con éxito",
+                    ToastAndroid.SHORT
+                );
+            } else {
+                Alert.alert("Nota de audio guardada con éxito");
+            }
+        } catch (error) {
+            console.log("❌ Error enviando audio:", error);
+
+            if (Platform.OS === "android") {
+                ToastAndroid.show(
+                    "Error enviando audio",
+                    ToastAndroid.SHORT
+                );
+            } else {
+                Alert.alert("Error enviando audio");
+            }
+        }
+    };
 
     return (
         <KeyboardAvoidingView
@@ -64,12 +115,17 @@ export const NoteBar: React.FC = () => {
                     </View>
 
                     <Pressable
+                        onPress={handleActionPress}
                         style={[
                             styles.actionButton,
-                            hasText ? styles.sendButton : styles.micButton,
+                            hasText
+                                ? styles.sendButton
+                                : isRecording
+                                    ? styles.recordingButton
+                                    : styles.micButton,
                         ]}
                     >
-                        {hasText ? (
+                        {hasText || isRecording ? (
                             <Send size={20} color="#fff" />
                         ) : (
                             <Mic size={20} color="#fff" />
@@ -124,5 +180,8 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         backgroundColor: "#25D366",
+    },
+    recordingButton: {
+        backgroundColor: "#E53935",
     },
 });

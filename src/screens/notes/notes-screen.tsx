@@ -1,13 +1,11 @@
 import { ScreenContainer } from "@/components/ui/screen-container";
-import { useTheme } from "react-native-paper";
 import { Heading } from "@/components/ui/heading";
 import { FlatList, View, StyleSheet } from "react-native";
 import { textMessageMocks } from "@/__MOCKS__/message-mocks";
 import { renderItem } from "./components/message-render-item";
+import { NoteBar } from "@/components/ui/noteBar";
 
 export const NotesScreen = () => {
-  const { colors } = useTheme();
-
   const messages = textMessageMocks;
 
   return (
@@ -20,6 +18,7 @@ export const NotesScreen = () => {
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         showsVerticalScrollIndicator={false}
       />
+      <NoteBar />
     </ScreenContainer>
   );
 };
