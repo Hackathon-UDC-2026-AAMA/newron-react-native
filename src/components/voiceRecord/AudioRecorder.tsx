@@ -9,6 +9,7 @@ import {
 } from "expo-audio";
 import { File, Directory, Paths } from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 
 export default function Recorder() {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
@@ -73,29 +74,14 @@ export default function Recorder() {
         title={recorderState.isRecording ? "Stop Recording" : "Start Recording"}
         onPress={recorderState.isRecording ? stopRecording : record}
       />
-
-      {fileName && (
-        <View style={styles.infoContainer}>
-          <Text style={styles.label}>Nombre del archivo:</Text>
-          <Text style={styles.value}>{fileName}</Text>
-
-          <Text style={styles.label}>Ruta:</Text>
-          <Text style={styles.value}>{savedUri}</Text>
-        </View>
-      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
     backgroundColor: "#ecf0f1",
-    padding: 20,
-  },
-  infoContainer: {
-    marginTop: 20,
+    padding: 5,
   },
   label: {
     fontWeight: "bold",
