@@ -1,5 +1,9 @@
 import { StyleProp, TextStyle } from "react-native";
-import { Text, TextProps as PaperTextProps } from "react-native-paper";
+import {
+  Text,
+  TextProps as PaperTextProps,
+  useTheme,
+} from "react-native-paper";
 
 type Variant = "main" | "secondary" | "tertiary";
 
@@ -13,10 +17,11 @@ export const Heading: React.FC<HeadingProps> = ({
   children,
   ...props
 }) => {
+  const { colors } = useTheme();
   const textStyles = getTextStyles(variant);
 
   return (
-    <Text {...props} style={[textStyles, style]}>
+    <Text {...props} style={[textStyles, style, { color: colors.primary }]}>
       {children}
     </Text>
   );
