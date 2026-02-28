@@ -1,13 +1,33 @@
 import apiClient from "./client";
 
-export const sendIngest = async (input) => {
-  try {
-    const response = await apiClient.post("/ingest", {
-      input: input,
-    });
+export interface IngestRequest {
+  input: string;
+}
 
-    return response.data; 
-  } catch (error) {
+
+export interface IngestResponse {
+  id: number;
+  type: string;
+  cluster_id: number;
+  similarity_score: number;
+}
+
+
+export const sendIngest = async (
+  input: string
+): Promise<IngestResponse> => {
+  try {
+    const { data } = await apiClient.post<IngestResponse>(
+      "/ingest",
+      { input }
+    );
+
+    return data;
+  } catch (error: any) {
+    console.log(
+      "❌ Error en ingest:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
