@@ -6,6 +6,7 @@ export const customTheme = {
     ...MD3DarkTheme.colors,
     background: "#1b1b1d",
     //onSurface: "#FFFFFF", Text color
+    onSurfaceVariant: "#1b1b1d",
   },
   fonts: {
     ...MD3DarkTheme.fonts,
