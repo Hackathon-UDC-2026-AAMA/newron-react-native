@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, TextInput, Button, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { sendIngest } from "@/components/API/ingestService";
-import { getItems } from "@/components/API/itemService";
+import { getItems, groupItemsByCluster } from "@/components/API/itemService";
 import { getClusters } from "@/components/API/clusterService";
 
 export default function Index() {
@@ -39,9 +39,12 @@ export default function Index() {
     try {
       const items = await getItems();
       const clusters = await getClusters();
+      const listItem = await groupItemsByCluster(items);
 
       console.log("Items:", items);
       console.log("Clusters:", clusters);
+      console.log("----------------")
+      console.log("Lista ordenada: ", listItem)
     } catch (error) {
       console.log("Error general:", error);
     }

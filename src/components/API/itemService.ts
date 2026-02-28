@@ -26,3 +26,15 @@ export const getItems = async (): Promise<Item[]> => {
     throw error;
   }
 };
+
+export const groupItemsByCluster = (items: Item[]) => {
+  return items.reduce<Record<number, Item[]>>((acc, item) => {
+    if (!acc[item.cluster_id]) {
+      acc[item.cluster_id] = [];
+    }
+
+    acc[item.cluster_id].push(item);
+
+    return acc;
+  }, {});
+};
