@@ -7,6 +7,11 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { NoteBar } from "@/components/ui/noteBar";
 import { Brain } from "lucide-react-native";
+import { Text } from "react-native-paper";
+import { VoiceNote } from "@/components/ui/voiceNote";
+import React from "react";
+import RecordingList from "@/components/voiceRecord/AudioList";
+import Recorder from "@/components/voiceRecord/AudioRecorder";
 
 export default function Index() {
   const [text, setText] = useState<string>("");
@@ -17,7 +22,6 @@ export default function Index() {
       const items = await getItems();
       const clusters = await getClusters();
 
-      // ❌ No necesita await porque no es async
       const listItem = groupItemsByCluster(items);
 
       console.log("Items:", items);
