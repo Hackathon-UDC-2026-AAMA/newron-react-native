@@ -1,10 +1,16 @@
-import { Text, View, StyleSheet } from "react-native";
+import { BackgroundWrapper } from "@/components/layout/background-wrapper";
+import { Heading } from "@/components/ui/heading";
+import { View, StyleSheet } from "react-native";
+import { Text } from "react-native-paper";
 
 export default function Index() {
   return (
-    <View style={styles.container}>
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
-    </View>
+    <BackgroundWrapper>
+      <View style={styles.container}>
+        <Heading>Heading 1</Heading>
+        <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      </View>
+    </BackgroundWrapper>
   );
 }
 
