@@ -1,14 +1,10 @@
-import RecordingList from "@/components/audio/AudioList";
-import Player from "@/components/audio/AudioPlayer";
-import Recorder from "@/components/audio/AudioRecorder";
+import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 
 export default function Index() {
   return (
     <View style={styles.container}>
       <Text>Edit src/app/index.tsx to edit this screen.</Text>
-      <Recorder />
-      <RecordingList />
       
     </View>
   );
