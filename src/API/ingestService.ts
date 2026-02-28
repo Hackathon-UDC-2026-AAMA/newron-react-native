@@ -70,7 +70,7 @@ export const sendIngestAudio = async (
     formData.append("file", {
       uri,
       name: fileName,
-      type: "audio/m4a", 
+      type: "audio/m4a",
     } as any);
 
     const { data } = await apiClient.post<IngestAudioResponse>(

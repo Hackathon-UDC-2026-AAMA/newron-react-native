@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { Mic, Send, Paperclip } from "lucide-react-native";
 import { useAudioRecorderHook } from "../voiceRecord/useAudioRecorderHook";
-import { sendIngestAudio } from "@/API/ingestService";
+import { sendIngestAudio, sendIngestFile } from "@/API/ingestService";
 import * as DocumentPicker from 'expo-document-picker';
 
 const { width } = Dimensions.get("window");
@@ -29,7 +29,7 @@ export const NoteBar: React.FC = () => {
     const pickFile = async () => {
         try {
             const result = await DocumentPicker.getDocumentAsync({
-                type: "*/*",
+                type: "*/*", 
                 copyToCacheDirectory: true,
                 multiple: false,
             });
@@ -43,6 +43,34 @@ export const NoteBar: React.FC = () => {
             console.log("URI:", file.uri);
             console.log("Tipo:", file.mimeType);
             console.log("Tamaño:", file.size);
+
+            try {
+                const response = await sendIngestFile(file.uri);
+
+                console.log("✅ Respuesta ingest-file:", response);
+
+                if (Platform.OS === "android") {
+                    ToastAndroid.show(
+                        "Documento enviado con éxito",
+                        ToastAndroid.SHORT
+                    );
+                } else {
+                    Alert.alert("Documento enviado con éxito");
+                }
+
+            } catch (error) {
+                console.log("❌ Error enviando archivo:", error);
+
+                if (Platform.OS === "android") {
+                    ToastAndroid.show(
+                        "Error enviando archivo",
+                        ToastAndroid.SHORT
+                    );
+                } else {
+                    Alert.alert("Error enviando archivo");
+                }
+            }
+
         } catch (error) {
             console.log("Error seleccionando archivo:", error);
         }
@@ -65,11 +93,11 @@ export const NoteBar: React.FC = () => {
         if (!recording) return;
 
         try {
-            console.log("📤 Enviando audio al backend...");
+            console.log("Enviando audio al backend...");
 
             const response = await sendIngestAudio(recording.uri);
 
-            console.log("✅ Respuesta ingest-audio:", response);
+            console.log("Respuesta ingest-audio:", response);
 
             if (Platform.OS === "android") {
                 ToastAndroid.show(
@@ -80,7 +108,7 @@ export const NoteBar: React.FC = () => {
                 Alert.alert("Nota de audio guardada con éxito");
             }
         } catch (error) {
-            console.log("❌ Error enviando audio:", error);
+            console.log("Error enviando audio:", error);
 
             if (Platform.OS === "android") {
                 ToastAndroid.show(

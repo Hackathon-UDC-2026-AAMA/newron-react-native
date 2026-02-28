@@ -1,6 +1,8 @@
 import { BackgroundWrapper } from "@/components/layout/background-wrapper";
 import { Heading } from "@/components/ui/heading";
+import { TopBar } from "@/components/ui/topBar";
 import { AppStore } from "@/config/storage/storage";
+import { CategoryCard } from "@/screens/categories/components/categoryCard";
 import { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
@@ -22,7 +24,12 @@ export default function Index() {
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
+        <TopBar />
         <Heading>Analytics</Heading>
+        <CategoryCard 
+          title="Mi Nota"
+          description="Esta es una descripción de ejemplo para la tarjeta."
+          />
       </View>
     </BackgroundWrapper>
   );
