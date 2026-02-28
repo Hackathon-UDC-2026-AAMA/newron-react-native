@@ -5,6 +5,8 @@ import { BackgroundWrapper } from "@/components/layout/background-wrapper";
 import { Heading } from "@/components/ui/heading";
 import { useEffect, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
+import { NoteBar } from "@/components/ui/noteBar";
+import { Brain } from "lucide-react-native";
 
 export default function Index() {
   const [text, setText] = useState<string>("");
@@ -53,7 +55,9 @@ export default function Index() {
   return (
     <BackgroundWrapper>
       <View style={styles.container}>
-        <Heading>Home</Heading>
+        <Brain size={100} color="#FFF"/>
+        <Heading>Newron</Heading>
+        <NoteBar />
       </View>
     </BackgroundWrapper>
   );
