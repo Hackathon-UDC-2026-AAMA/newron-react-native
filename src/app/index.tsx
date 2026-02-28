@@ -1,8 +1,7 @@
-import { Text, View, StyleSheet, TextInput, Button, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
-import { sendIngest } from "@/components/API/ingestService";
-import { getItems, groupItemsByCluster } from "@/components/API/itemService";
-import { getClusters } from "@/components/API/clusterService";
+import { BackgroundWrapper } from "@/components/layout/background-wrapper";
+import { Heading } from "@/components/ui/heading";
+import { View, StyleSheet } from "react-native";
+import { Text } from "react-native-paper";
 
 export default function Index() {
   const [text, setText] = useState("");
@@ -51,22 +50,12 @@ export default function Index() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text>Enviar texto al backend</Text>
-
-      <TextInput
-        placeholder="Escribe algo..."
-        value={text}
-        onChangeText={setText}
-        style={styles.input}
-      />
-
-      <Button
-        title={loading ? "Enviando..." : "Enviar"}
-        onPress={handleSend}
-        disabled={loading}
-      />
-    </View>
+    <BackgroundWrapper>
+      <View style={styles.container}>
+        <Heading>Heading 1</Heading>
+        <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      </View>
+    </BackgroundWrapper>
   );
 }
 
