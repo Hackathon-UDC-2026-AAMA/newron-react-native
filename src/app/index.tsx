@@ -1,6 +1,8 @@
 import { Text, View, StyleSheet, TextInput, Button, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { sendIngest } from "@/components/API/ingestService";
+import { getItems } from "@/components/API/itemService";
+import { getClusters } from "@/components/API/clusterService";
 
 export default function Index() {
   const [text, setText] = useState("");
@@ -19,14 +21,29 @@ export default function Index() {
 
       console.log("Respuesta backend:", response);
 
-      // Si no quieres mostrar nada en pantalla,
-      // simplemente lo dejamos aquí.
-      
+
     } catch (error) {
       console.log("Error:", error.response?.data || error.message);
       Alert.alert("Error", "No se pudo enviar la petición");
     } finally {
       setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const items = await getItems();
+      const clusters = await getClusters();
+
+      console.log("Items:", items);
+      console.log("Clusters:", clusters);
+    } catch (error) {
+      console.log("Error general:", error);
     }
   };
 
