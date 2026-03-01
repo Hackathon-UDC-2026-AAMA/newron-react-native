@@ -199,7 +199,7 @@ export const NoteBar = ({
               </Animated.Text>
             ) : (
               <TextInput
-                placeholder="Enter your note"
+                placeholder="Introduce tu nota"
                 placeholderTextColor="#777"
                 style={styles.input}
                 value={text}

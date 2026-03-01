@@ -21,7 +21,7 @@ export const Heading: React.FC<HeadingProps> = ({
   const textStyles = getTextStyles(variant);
 
   return (
-    <Text {...props} style={[textStyles, style, { color: colors.primary }]}>
+    <Text {...props} style={[textStyles, { color: colors.primary }, style]}>
       {children}
     </Text>
   );
