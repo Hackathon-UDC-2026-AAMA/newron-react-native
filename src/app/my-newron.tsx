@@ -1,11 +1,13 @@
-import { Cluster } from "@/API/clusterService";
-import { getItems, Item } from "@/API/itemService";
+import { Cluster, getClusters } from "@/API/clusterService";
+import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
 import { BackgroundWrapper } from "@/components/layout/background-wrapper";
 import { Heading } from "@/components/ui/heading";
 import { TopBar } from "@/components/ui/topBar";
 import { ClusterList } from "@/screens/categories/components/clusterList";
+import { RefreshCcw } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useTheme } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
@@ -14,28 +16,39 @@ export default function Index() {
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const [items, setItems] = useState<Item[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const itemsData = await getItems();
-      setItems(itemsData);
-    };
+  const { colors } = useTheme();
 
+  const fetchData = async () => {
+    const itemsData = await getItems();
+    setItems(itemsData);
+    const clusterData = await getClusters();
+    setClusters(clusterData);
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
   return (
     <BackgroundWrapper>
-      <View
-        style={[
-          styles.container,
-          { paddingTop: insets.top + 60 },
-        ]}
-      >
+      <View style={[styles.container, { paddingTop: insets.top + 60 }]}>
         <TopBar />
 
-        <Heading style={styles.heading}>
-          Analytics
-        </Heading>
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Heading style={(styles.heading, { marginVertical: 8 })}>
+            Mi Newron
+          </Heading>
+          <TouchableOpacity onPress={fetchData}>
+            <RefreshCcw color={colors.primary} />
+          </TouchableOpacity>
+        </View>
 
         <ClusterList clusters={clusters} items={items} />
       </View>

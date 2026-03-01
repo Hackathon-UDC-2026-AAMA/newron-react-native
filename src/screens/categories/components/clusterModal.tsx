@@ -1,5 +1,11 @@
 import React from "react";
-import { View, StyleSheet, Modal, FlatList } from "react-native";
+import {
+    View,
+    StyleSheet,
+    Modal,
+    FlatList,
+    Linking,
+} from "react-native";
 import { Text, Button, useTheme } from "react-native-paper";
 import { Item } from "@/API/itemService";
 
@@ -27,6 +33,36 @@ export const ClusterModal: React.FC<ClusterModalProps> = ({
     const { colors } = useTheme();
 
     if (!cluster) return null;
+
+    
+    const renderTextWithLinks = (text: string) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const parts = text.split(urlRegex);
+
+        return parts.map((part, index) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <Text
+                        key={index}
+                        style={{
+                            color: colors.primary,
+                            textDecorationLine: "underline",
+                        }}
+                        onPress={() => Linking.openURL(part)}
+                    >
+                        {part}
+                    </Text>
+                );
+            }
+
+            return (
+                <Text key={index} style={{ color: colors.onSurface }}>
+                    {part}
+                </Text>
+            );
+        });
+    };
+    
 
     return (
         <Modal
@@ -76,16 +112,10 @@ export const ClusterModal: React.FC<ClusterModalProps> = ({
                         style={styles.list}
                         renderItem={({ item }) => (
                             <View style={styles.itemCard}>
-                                <Text style={{ color: colors.onSurface }}>
-                                    Tipo: {item.type}
-                                </Text>
-                                <Text
-                                    style={{
-                                        fontSize: 12,
-                                        color: colors.onSurfaceVariant,
-                                    }}
-                                >
-                                    Similaridad: {item.similarity_score.toFixed(2)}
+                                <Text>
+                                    {renderTextWithLinks(
+                                        item.original_input
+                                    )}
                                 </Text>
                             </View>
                         )}
@@ -113,7 +143,7 @@ const styles = StyleSheet.create({
     },
     container: {
         width: "90%",
-        maxHeight: "80%", // 🔥 importante para scroll
+        maxHeight: "80%",
         backgroundColor: "#FFFFFF",
         borderRadius: 16,
         padding: 20,

@@ -12,7 +12,7 @@ export const ScanQR = () => {
     try {
       const url = `http://${ip}:8000/pair?secret=${encodeURIComponent(token)}`;
 
-      console.log(`Intentando conectar a ${url}...`);
+      //console.log(`Intentando conectar a ${url}...`);
 
       const res = await fetch(url, { method: "POST" });
 
@@ -28,7 +28,7 @@ export const ScanQR = () => {
     } catch (error) {
       console.error("Connection error:", error);
       alert(
-        "No se pudo conectar con el servidor. Revisa que estés en el mismo WiFi."
+        "No se pudo conectar con el servidor. Revisa que estés en el mismo WiFi.",
       );
     }
   };
@@ -73,7 +73,6 @@ export const ScanQR = () => {
     );
   }
 
-  
   return (
     <View style={styles.cameraContainer}>
       <CameraView

@@ -1,4 +1,6 @@
-import apiClient from "./client";
+import { getApiClient } from "@/API/client";
+import { DocumentFile } from "@/types/document";
+
 import * as FileSystem from "expo-file-system/legacy";
 
 export interface IngestRequest {
@@ -41,6 +43,8 @@ export interface IngestFileResponse {
 
 export const sendIngest = async (input: string): Promise<IngestResponse> => {
   try {
+    const apiClient = await getApiClient();
+
     const { data } = await apiClient.post<IngestResponse>("/ingest", { input });
 
     return data;
@@ -54,6 +58,8 @@ export const sendIngestMultiple = async (
   inputs: { input: string }[], // Accept an array of objects with 'input' as a string
 ): Promise<IngestResponse> => {
   try {
+    const apiClient = await getApiClient();
+
     const textArr = inputs.map((input) => {
       return input.input;
     });
@@ -75,6 +81,8 @@ export const sendIngestAudio = async (
   uri: string,
 ): Promise<IngestAudioResponse> => {
   try {
+    const apiClient = await getApiClient();
+
     const formData = new FormData();
 
     const fileName = uri.split("/").pop() || "audio.m4a";
@@ -84,7 +92,7 @@ export const sendIngestAudio = async (
       name: fileName,
       type: "audio/m4a",
     } as any);
-
+    //console.log("'''''''''''''''''''''FormData", formData, uri);
     const { data } = await apiClient.post<IngestAudioResponse>(
       "/ingest-audio",
       formData,
@@ -135,6 +143,7 @@ export const sendIngestFile = async (file: {
   name?: string;
   type?: string;
 }): Promise<IngestFileResponse> => {
+  const apiClient = await getApiClient();
   const formData = new FormData();
   let tmpPath: string | undefined;
 

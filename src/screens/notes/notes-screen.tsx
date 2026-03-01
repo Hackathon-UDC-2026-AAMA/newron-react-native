@@ -11,8 +11,7 @@ import {
 } from "./actions/message-actions";
 import { useMessageContext } from "@/context/message-context";
 import { PenOff } from "lucide-react-native";
-import { getItems, groupItemsByCluster } from "@/API/itemService";
-import { getClusters } from "@/API/clusterService";
+import { getItems } from "@/API/itemService";
 import { useEffect } from "react";
 import { SyncButton } from "./components/sync-button";
 
@@ -24,11 +23,8 @@ export const NotesScreen = () => {
     const fetchData = async () => {
       try {
         const itemsResponse = await getItems();
-        const clustersResponse = await getClusters();
 
         console.log("items:", itemsResponse);
-        console.log("clusters:", clustersResponse);
-        console.log("lista ordenada:", groupItemsByCluster(itemsResponse));
       } catch (error) {
         console.log("Error cargando datos:", error);
       }

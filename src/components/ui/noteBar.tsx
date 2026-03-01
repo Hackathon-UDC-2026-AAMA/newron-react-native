@@ -199,7 +199,7 @@ export const NoteBar = ({
       }
 
       const response = await sendIngestAudio(recording.uri);
-      console.log("Ingest response:", response);
+      //console.log("Ingest response:", response);
 
       const existingNotesJSON = await AsyncStorage.getItem("@audio_notes");
       const existingNotes = existingNotesJSON

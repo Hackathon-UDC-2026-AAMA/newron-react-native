@@ -1,47 +1,59 @@
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const IP = AsyncStorage.getItem("server_ip");
+import axios, { AxiosInstance } from "axios";
 
-const apiClient = axios.create({
-  baseURL: "http://172.20.10.2:8000", //`https://webhook.site/950eef67-edad-4974-bb9d-2d512d556e64`,
+let apiClient: AxiosInstance | null = null;
 
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 120_000_000,
-});
+export const getApiClient = async () => {
+  if (apiClient) return apiClient;
 
-apiClient.interceptors.request.use(
-  (config) => {
-    const method = config.method?.toUpperCase();
-    const url = config.url;
+  const IP = await AsyncStorage.getItem("server_ip");
 
-    console.log(`➡️ [REQUEST] ${method} ${url}`);
-    return config;
-  },
-  (error) => {
-    console.error("❌ [REQUEST ERROR]", error);
-    return Promise.reject(error);
-  },
-);
+  if (!IP) {
+    throw new Error("No hay IP guardada en AsyncStorage");
+  }
 
-apiClient.interceptors.response.use(
-  (response) => {
-    const method = response.config.method?.toUpperCase();
-    const url = response.config.url;
+  apiClient = axios.create({
+    baseURL: `http://172.20.10.2:8000`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    timeout: 120_000,
+  });
 
-    console.log(`✅ [RESPONSE] ${method} ${url} - ${response.status}`);
-    return response;
-  },
-  (error) => {
-    const method = error.config?.method?.toUpperCase();
-    const url = error.config?.url;
-    const status = error.response?.status;
+  // Interceptor request
+  apiClient.interceptors.request.use(
+    (config) => {
+      const method = config.method?.toUpperCase();
+      const url = config.url;
 
-    console.error(`🔥 [ERROR] ${method} ${url} - Status: ${status}`);
-    return Promise.reject(error);
-  },
-);
+      console.log(`➡️ [REQUEST] ${method} ${url}`);
+      return config;
+    },
+    (error) => {
+      console.error("❌ [REQUEST ERROR]", error);
+      return Promise.reject(error);
+    },
+  );
 
-export default apiClient;
+  // Interceptor response
+  apiClient.interceptors.response.use(
+    (response) => {
+      const method = response.config.method?.toUpperCase();
+      const url = response.config.url;
+
+      console.log(`✅ [RESPONSE] ${method} ${url} - ${response.status}`);
+      return response;
+    },
+    (error) => {
+      const method = error.config?.method?.toUpperCase();
+      const url = error.config?.url;
+      const status = error.response?.status;
+
+      console.error(`❌ [ERROR] ${method} ${url} - Status: ${status}`);
+      return Promise.reject(error);
+    },
+  );
+  return apiClient;
+};
+export default getApiClient;
