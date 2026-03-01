@@ -1,5 +1,6 @@
 import { Recording } from "@/types/recording";
 import { StorageWrapper } from "./storage-wrapper";
+import { Message } from "@/types/message";
 
 const KEYS = {
   recordings: "recordings",
@@ -9,5 +10,5 @@ const KEYS = {
 
 export const AppStore = {
   recordings: new StorageWrapper<Recording[]>(KEYS.recordings),
-  messages: new StorageWrapper<string[]>(KEYS.messages),
+  messages: new StorageWrapper<Message[]>(KEYS.messages),
 };

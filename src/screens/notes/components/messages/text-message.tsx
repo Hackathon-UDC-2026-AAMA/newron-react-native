@@ -1,7 +1,7 @@
 import { MessageCard, MessageCardProps } from "./message-card";
 import { Text, useTheme } from "react-native-paper";
 import CustomLink from "@/components/ui/custom-link";
-import { Link2, NotebookText } from "lucide-react-native";
+import { Link2, TextInitial } from "lucide-react-native";
 
 interface Props extends MessageCardProps {
   content: string;
@@ -23,7 +23,7 @@ export const TextMessage = ({ content, color, timestamp, isLink }: Props) => {
             style={{ opacity: 0.9 }}
           />
         ) : (
-          <NotebookText
+          <TextInitial
             size={20}
             color={colors.surfaceVariant}
             style={{ opacity: 0.9 }}
