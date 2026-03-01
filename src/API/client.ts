@@ -1,20 +1,25 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://10.20.28.30:8000",
+  baseURL: "http://10.20.25.17:8000",
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000,
+  timeout: 120_000,
 });
 
+/*
 // Interceptor para logs automáticos (opcional)
 apiClient.interceptors.request.use(
   (config) => {
-    console.log("📤 Enviando petición:", config.method?.toUpperCase(), config.url);
+    console.log(
+      "📤 Enviando petición:",
+      config.method?.toUpperCase(),
+      config.url,
+    );
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 //Interceptor para respuestas
@@ -26,10 +31,11 @@ apiClient.interceptors.response.use(
   (error) => {
     console.log(
       "❌ Error en respuesta:",
-      error.response?.data || error.message
+      error.response?.data || error.message,
     );
     return Promise.reject(error);
-  }
+  },
 );
+*/
 
 export default apiClient;

@@ -20,6 +20,7 @@ import { Text, useTheme } from "react-native-paper";
 import { useMessageContext } from "@/context/message-context";
 import { Message } from "@/types/message";
 import { DocumentFile } from "@/types/document";
+import { AppStore } from "@/config/storage/storage";
 
 interface Props {
   onTextMessage?: (content: string) => Promise<Message[]>;
@@ -92,10 +93,10 @@ export const NoteBar = ({
     }
   }, [isRecording]);
 
-  const pickFile = async () => {
+  /*const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*",
+        
         copyToCacheDirectory: true,
         multiple: false,
       });
@@ -121,6 +122,7 @@ export const NoteBar = ({
         base64: base64Content,
         path: fileUri, // Keep this for your file explorer logic
       };
+      
 
       console.log("Success! File ready:", myFileData.name);
 
@@ -136,7 +138,33 @@ export const NoteBar = ({
       console.error("Error picking file:", error);
       Alert.alert("Error", "Could not process file.");
     }
-  };
+  };*/
+
+  const pickFile = async () => {
+        try {
+            const result = await DocumentPicker.getDocumentAsync({
+                type: "*/*",
+                copyToCacheDirectory: true,
+                multiple: false,
+            });
+
+            if (result.canceled) return;
+
+            const file = result.assets[0];
+            if (onDocumentMessage){ 
+              const newMessages = await onDocumentMessage({path: file.uri})
+              setMessages(newMessages);
+            }
+            console.log("Archivo seleccionado:");
+            console.log("Nombre:", file.name);
+            console.log("URI:", file.uri);
+            console.log("Tipo:", file.mimeType);
+            console.log("Tamaño:", file.size);
+        } catch (error) {
+            console.log("Error seleccionando archivo:", error);
+        }
+    };
+
 
   const handleActionPress = async () => {
     Keyboard.dismiss();
