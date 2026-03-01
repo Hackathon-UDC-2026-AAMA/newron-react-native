@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export const useBackendConnection = () => {
   const [connected, setConnected] = useState(false);
@@ -14,11 +15,11 @@ export const useBackendConnection = () => {
         return;
       }
 
-      const res = await fetch(`http://${ip}:8000/health`, {
+      const res = await axios.get(`http://${ip}:8000/health`, {
         timeout: 3000,
       });
 
-      setConnected(res.ok);
+      setConnected(res.status === 200);
     } catch {
       setConnected(false);
     } finally {
