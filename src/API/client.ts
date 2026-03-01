@@ -1,11 +1,16 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const IP = AsyncStorage.getItem("server_ip")
 
 const apiClient = axios.create({
-  baseURL: "http://10.20.28.30:8000",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 10000,
+
+baseURL: `http://${IP}:8000`,
+
+headers: {
+  "Content-Type": "application/json",
+},
+timeout: 120_000,
 });
 
 apiClient.interceptors.request.use(
@@ -37,7 +42,8 @@ apiClient.interceptors.response.use(
 
     console.error(`🔥 [ERROR] ${method} ${url} - Status: ${status}`);
     return Promise.reject(error);
-  }
+  },
 );
+*/
 
 export default apiClient;
