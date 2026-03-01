@@ -5,7 +5,6 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const ScanQR = () => {
-  const [showCamera, setShowCamera] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
 
@@ -15,9 +14,7 @@ export const ScanQR = () => {
 
       console.log(`Intentando conectar a ${url}...`);
 
-      const res = await fetch(url, {
-        method: "POST",
-      });
+      const res = await fetch(url, { method: "POST" });
 
       if (!res.ok) {
         const errorDetail = await res.json();
@@ -48,7 +45,6 @@ export const ScanQR = () => {
       await connectToServer({ ip, token });
 
       setScanned(true);
-      setShowCamera(false);
     } catch (err) {
       alert("QR inválido o error de conexión");
       console.error(err);
@@ -56,16 +52,17 @@ export const ScanQR = () => {
     }
   };
 
-  if (!permission)
+  if (!permission) {
     return (
-      <View style={styles.container}>
-        <Text>Cargando...</Text>
+      <View style={styles.centered}>
+        <Text>Cargando cámara...</Text>
       </View>
     );
+  }
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <View style={styles.centered}>
         <Text style={{ marginBottom: 20 }}>
           Necesitamos permiso para usar la cámara
         </Text>
@@ -76,44 +73,30 @@ export const ScanQR = () => {
     );
   }
 
-  if (showCamera) {
-    return (
-      <View style={styles.cameraContainer}>
-        <CameraView
-          style={StyleSheet.absoluteFill} // Esto asegura que llene todo el espacio
-          facing="back" // Especificamos la cámara trasera
-          barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
-          onBarcodeScanned={scanned ? undefined : handleScan}
-        />
-        {/* Botón opcional para cerrar la cámara si el usuario se arrepiente */}
-        <Button
-          mode="contained"
-          onPress={() => setShowCamera(false)}
-          style={styles.closeButton}
-        >
-          Cancelar
-        </Button>
-      </View>
-    );
-  }
-
+  
   return (
-    <View style={styles.container}>
+    <View style={styles.cameraContainer}>
+      <CameraView
+        style={StyleSheet.absoluteFill}
+        facing="back"
+        barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
+        onBarcodeScanned={scanned ? undefined : handleScan}
+      />
+
       <Button
         mode="contained"
-        onPress={() => {
-          setScanned(false);
-          setShowCamera(true);
-        }}
+        onPress={() => setScanned(false)}
+        style={styles.closeButton}
       >
-        Escanear QR
+        Escanear de nuevo
       </Button>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  centered: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",

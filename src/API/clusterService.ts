@@ -3,6 +3,9 @@ import apiClient from "./client";
 export interface Cluster {
   id: number;
   cluster_label: string | null;
+  cluster_description: string | null;
+  cluster_keywords: string[];
+  size: number;
 }
 
 export const getClusters = async (): Promise<Cluster[]> => {
