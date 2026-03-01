@@ -20,12 +20,15 @@ import { Text, useTheme } from "react-native-paper";
 import { useMessageContext } from "@/context/message-context";
 import { Message } from "@/types/message";
 import { DocumentFile } from "@/types/document";
+import { Recording } from "@/types/recording";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppStore } from "@/config/storage/storage";
+import { useShareIntent } from "expo-share-intent";
 
 interface Props {
   onTextMessage?: (content: string) => Promise<Message[]>;
   onDocumentMessage?: (document: DocumentFile) => Promise<Message[]>;
-  onRecordingMessage?: () => Promise<Message[]>;
+  onRecordingMessage?: (recording: Recording) => Promise<Message[]>;
 }
 
 export const NoteBar = ({
@@ -39,8 +42,6 @@ export const NoteBar = ({
 
   const { startRecording, stopRecording, isRecording } = useAudioRecorderHook();
   const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
-
-  const { startRecording, stopRecording, isRecording } = useAudioRecorderHook();
 
   useEffect(() => {
     if (hasShareIntent && shareIntent) {
@@ -80,7 +81,7 @@ export const NoteBar = ({
               duration: 400,
               useNativeDriver: true,
             }),
-          ]),
+          ])
         ),
         Animated.loop(
           Animated.sequence([
@@ -94,7 +95,7 @@ export const NoteBar = ({
               duration: 400,
               useNativeDriver: true,
             }),
-          ]),
+          ])
         ),
       ]).start();
     } else {
@@ -159,7 +160,6 @@ export const NoteBar = ({
       Alert.alert("Error", "Could not process file.");
     }
   };*/
-  const hasText = text.trim().length > 0;
 
   const pickFile = async () => {
     try {
@@ -172,10 +172,10 @@ export const NoteBar = ({
       if (result.canceled) return;
 
       const file = result.assets[0];
-            if (onDocumentMessage){ 
-              const newMessages = await onDocumentMessage({path: file.uri})
-              setMessages(newMessages);
-            }
+      if (onDocumentMessage) {
+        const newMessages = await onDocumentMessage({ path: file.uri });
+        setMessages(newMessages);
+      }
       console.log("Archivo seleccionado:");
       console.log("Nombre:", file.name);
       console.log("URI:", file.uri);
@@ -185,7 +185,6 @@ export const NoteBar = ({
       console.log("Error seleccionando archivo:", error);
     }
   };
-
 
   const handleActionPress = async () => {
     Keyboard.dismiss();
@@ -213,18 +212,43 @@ export const NoteBar = ({
     if (!recording) return;
 
     try {
+      const base64Content = await FileSystem.readAsStringAsync(recording.uri, {
+        encoding: "base64",
+      });
+
+      const newAudioNote = {
+        id: Date.now().toString(),
+        path: recording.uri,
+        base64: base64Content,
+        type: "audio",
+      };
+
+      if (onRecordingMessage) {
+        const newMessages = await onRecordingMessage(newAudioNote);
+        setMessages(newMessages);
+      }
+
       const response = await sendIngestAudio(recording.uri);
       console.log("Ingest response:", response);
 
-      const successMsg = "Audio note saved successfully";
+      const existingNotesJSON = await AsyncStorage.getItem("@audio_notes");
+      const existingNotes = existingNotesJSON
+        ? JSON.parse(existingNotesJSON)
+        : [];
+
+      const updatedNotes = [...existingNotes, newAudioNote];
+      await AsyncStorage.setItem("@audio_notes", JSON.stringify(updatedNotes));
+
+      const successMsg = "Audio guardado localmente";
       Platform.OS === "android"
         ? ToastAndroid.show(successMsg, ToastAndroid.SHORT)
-        : Alert.alert(successMsg);
+        : Alert.alert("Éxito", successMsg);
     } catch (error) {
-      const errorMsg = "Error sending audio";
+      console.error("Error al guardar en Storage:", error);
+      const errorMsg = "Error al guardar el audio localmente";
       Platform.OS === "android"
         ? ToastAndroid.show(errorMsg, ToastAndroid.SHORT)
-        : Alert.alert(errorMsg);
+        : Alert.alert("Error", errorMsg);
     }
   };
 

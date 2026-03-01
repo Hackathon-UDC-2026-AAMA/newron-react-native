@@ -1,4 +1,5 @@
 export interface Recording {
   id: string;
-  file: string;
+  path: string;
+  base64: string;
 }
