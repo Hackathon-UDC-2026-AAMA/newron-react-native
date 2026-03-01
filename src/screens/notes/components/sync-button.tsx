@@ -60,9 +60,7 @@ export const SyncButton = ({ disabled }: Props) => {
         );
         try {
           await sendIngestFile({
-            name: fileDocument.name ?? "upload.bin",
-            uri: normalizeFileUri(fileDocument.path),
-            type: toMimeType(fileDocument.name, fileDocument.extension),
+            file: fileDocument.path
           });
           console.log("File successfully ingested:", fileDocument.name);
         } catch (error) {

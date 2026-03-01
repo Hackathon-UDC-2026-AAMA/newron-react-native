@@ -104,6 +104,7 @@ export const sendIngestAudio = async (
   }
 };
 
+/*
 export const sendIngestFile = async (file: {
   uri: string; // ej: file:///...
   name: string; // ej: "document.pdf"
@@ -124,8 +125,8 @@ export const sendIngestFile = async (file: {
   });
   return data;
 };
+*/
 
-/*
 export const sendIngestFile = async (file: {
   file: string;
 }): Promise<IngestResponse> => {
@@ -137,15 +138,11 @@ export const sendIngestFile = async (file: {
   console.log("============>FORMDATA", formData);
 
   try {
-    const { data } = await apiClient.post<IngestResponse>("/ingest", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data", // Ensure the request is sent as multipart/form-data
-      },
-    });
+    const { data } = await apiClient.post<IngestResponse>("/ingest", formData);
 
     return data;
   } catch (error: any) {
     console.log("❌ Error en ingest:", error.response?.data || error.message);
     throw error;
   }
-};*/
+};
