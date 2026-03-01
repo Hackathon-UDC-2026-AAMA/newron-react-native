@@ -1,5 +1,6 @@
 import { sendIngestFile, sendIngestMultiple } from "@/API/ingestService";
 import { AppStore } from "@/config/storage/storage";
+import { useMessageContext } from "@/context/message-context";
 import { DocumentFile } from "@/types/document";
 import { Message } from "@/types/message";
 import { CloudSync } from "lucide-react-native";
@@ -13,6 +14,8 @@ interface Props {
 export const SyncButton = ({ disabled }: Props) => {
   const { colors } = useTheme();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { setMessages } = useMessageContext();
 
   const handleSync = async () => {
     setIsLoading(true);
@@ -90,7 +93,7 @@ export const SyncButton = ({ disabled }: Props) => {
       processed: true,
     }));
 
-    await AppStore.messages.setItem(processedMessages);
+    setMessages(processedMessages);
 
     setIsLoading(false);
   };
