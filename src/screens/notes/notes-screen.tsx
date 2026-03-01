@@ -4,7 +4,11 @@ import { FlatList, View, StyleSheet } from "react-native";
 import { useTheme } from "react-native-paper";
 import { renderItem } from "./components/message-render-item";
 import { NoteBar } from "@/components/ui/noteBar";
-import { onDocumentMessage, onTextMessage } from "./actions/message-actions";
+import {
+  onDocumentMessage,
+  onRecordingMessage,
+  onTextMessage,
+} from "./actions/message-actions";
 import { useMessageContext } from "@/context/message-context";
 import { PenOff } from "lucide-react-native";
 
@@ -51,6 +55,7 @@ export const NotesScreen = () => {
       <NoteBar
         onTextMessage={onTextMessage}
         onDocumentMessage={onDocumentMessage}
+        onRecordingMessage={onRecordingMessage}
       />
     </ScreenContainer>
   );

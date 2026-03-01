@@ -3,6 +3,8 @@ import { TextMessage } from "./messages/text-message";
 import { FileMessage } from "./messages/file-message";
 import { File } from "expo-file-system";
 import { DocumentFile } from "@/types/document";
+import AudioMessage from "./messages/audio-message";
+import { Recording } from "@/types/recording";
 
 export const renderItem = ({ item }: { item: Message }) => {
   if (item.type === "Text") {
@@ -26,7 +28,13 @@ export const renderItem = ({ item }: { item: Message }) => {
       />
     );
   } else if (item.type === "Audio") {
-    // TODO: Implement
+    return (
+      <AudioMessage
+        key={item.id}
+        audioUri={(item.data as Recording).path}
+        duration={item.timestamp}
+      />
+    );
   }
   return null;
 };
