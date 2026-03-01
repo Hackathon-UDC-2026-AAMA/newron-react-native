@@ -7,9 +7,13 @@ import { NoteBar } from "@/components/ui/noteBar";
 import { onDocumentMessage, onTextMessage } from "./actions/message-actions";
 import { useMessageContext } from "@/context/message-context";
 import { PenOff } from "lucide-react-native";
+<<<<<<< HEAD
 import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
 import { getClusters } from "@/API/clusterService";
 import { useEffect } from "react";
+=======
+import { SyncButton } from "./components/sync-button";
+>>>>>>> origin/dev
 
 export const NotesScreen = () => {
   const { colors } = useTheme();
@@ -36,7 +40,18 @@ export const NotesScreen = () => {
 
   return (
     <ScreenContainer>
-      <Heading style={{ marginBottom: 16 }}>Mis notas</Heading>
+      <View
+        style={{
+          width: "100%",
+          justifyContent: "space-between",
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
+        <Heading>Mis notas</Heading>
+        <SyncButton disabled={!messages || messages.length === 0} />
+      </View>
       <FlatList
         data={messages}
         ListEmptyComponent={() => (
