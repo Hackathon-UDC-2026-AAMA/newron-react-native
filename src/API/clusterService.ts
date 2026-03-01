@@ -1,4 +1,4 @@
-import apiClient from "./client";
+import apiClient, { getApiClient } from "./client";
 
 export interface Cluster {
   id: number;
@@ -10,6 +10,8 @@ export interface Cluster {
 
 export const getClusters = async (): Promise<Cluster[]> => {
   try {
+    const apiClient = await getApiClient();
+    
     const response = await apiClient.get<Cluster[]>("/clusters");
 
     
