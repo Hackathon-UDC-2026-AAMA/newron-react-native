@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "newron-react-native",
-    "slug": "newron-react-native",
+    "name": "Newron",
+    "slug": "Newron",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -36,7 +36,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#FFFFFF",
           "android": {
             "image": "./assets/images/splash-icon.png",
             "imageWidth": 76
