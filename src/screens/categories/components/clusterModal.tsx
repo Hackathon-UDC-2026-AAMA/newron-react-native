@@ -77,16 +77,9 @@ export const ClusterModal: React.FC<ClusterModalProps> = ({
                         renderItem={({ item }) => (
                             <View style={styles.itemCard}>
                                 <Text style={{ color: colors.onSurface }}>
-                                    Tipo: {item.type}
+                                    {item.original_input}
                                 </Text>
-                                <Text
-                                    style={{
-                                        fontSize: 12,
-                                        color: colors.onSurfaceVariant,
-                                    }}
-                                >
-                                    Similaridad: {item.similarity_score.toFixed(2)}
-                                </Text>
+                                
                             </View>
                         )}
                     />

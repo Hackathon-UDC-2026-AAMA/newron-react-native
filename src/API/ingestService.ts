@@ -91,7 +91,7 @@ export const sendIngestAudio = async (
       name: fileName,
       type: "audio/m4a",
     } as any);
-    console.log("'''''''''''''''''''''FormData", formData, uri);
+    //console.log("'''''''''''''''''''''FormData", formData, uri);
     const { data } = await apiClient.post<IngestAudioResponse>(
       "/ingest-audio",
       formData,
@@ -148,7 +148,7 @@ export const sendIngestFile = async (
       type: "*/*",
     } as any);
 
-  console.log("============>FORMDATA", formData, file.file.path);
+  //console.log("============>FORMDATA", formData, file.file.path);
   const headers= {
       headers:{
         "Content-Type": "application/x-www-form-url-encoded",

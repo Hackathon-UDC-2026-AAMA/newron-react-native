@@ -12,7 +12,7 @@ export const ScanQR = () => {
     try {
       const url = `http://${ip}:8000/pair?secret=${encodeURIComponent(token)}`;
 
-      console.log(`Intentando conectar a ${url}...`);
+      //console.log(`Intentando conectar a ${url}...`);
 
       const res = await fetch(url, { method: "POST" });
 

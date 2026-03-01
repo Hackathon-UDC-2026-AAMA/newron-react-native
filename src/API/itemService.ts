@@ -6,6 +6,7 @@ export interface Item {
   cluster_id: number;
   similarity_score: number;
   created_at: string;
+  original_input: number;
 }
 
 export const getItems = async (): Promise<Item[]> => {
