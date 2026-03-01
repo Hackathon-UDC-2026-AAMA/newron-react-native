@@ -29,8 +29,8 @@ export const NotesScreen = () => {
 
 
         console.log("items:", itemsResponse);
-        console.log("clusters:", clustersResponse);
-        console.log("lista ordenada:", groupItemsByCluster(itemsResponse));
+        //console.log("clusters:", clustersResponse);
+        //console.log("lista ordenada:", groupItemsByCluster(itemsResponse));
       } catch (error) {
         console.log("Error cargando datos:", error);
       }

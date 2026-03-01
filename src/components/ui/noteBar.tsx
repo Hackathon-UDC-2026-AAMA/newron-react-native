@@ -129,11 +129,11 @@ export const NoteBar = ({
         const newMessages = await onDocumentMessage({ path: file.uri });
         setMessages(newMessages);
       }
-      console.log("Archivo seleccionado:");
-      console.log("Nombre:", file.name);
-      console.log("URI:", file.uri);
-      console.log("Tipo:", file.mimeType);
-      console.log("Tamaño:", file.size);
+      //console.log("Archivo seleccionado:");
+      //console.log("Nombre:", file.name);
+      //console.log("URI:", file.uri);
+      //console.log("Tipo:", file.mimeType);
+      //console.log("Tamaño:", file.size);
     } catch (error) {
       console.log("Error seleccionando archivo:", error);
     }
@@ -182,7 +182,7 @@ export const NoteBar = ({
       }
 
       const response = await sendIngestAudio(recording.uri);
-      console.log("Ingest response:", response);
+      //console.log("Ingest response:", response);
 
       const existingNotesJSON = await AsyncStorage.getItem("@audio_notes");
       const existingNotes = existingNotesJSON

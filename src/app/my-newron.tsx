@@ -1,5 +1,5 @@
-import { Cluster } from "@/API/clusterService";
-import { getItems, Item } from "@/API/itemService";
+import { Cluster, getClusters } from "@/API/clusterService";
+import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
 import { BackgroundWrapper } from "@/components/layout/background-wrapper";
 import { Heading } from "@/components/ui/heading";
 import { TopBar } from "@/components/ui/topBar";
@@ -18,6 +18,8 @@ export default function Index() {
     const fetchData = async () => {
       const itemsData = await getItems();
       setItems(itemsData);
+      const clusterData = await getClusters();
+      setClusters(clusterData);
     };
 
     fetchData();
