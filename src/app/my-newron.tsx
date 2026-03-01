@@ -1,35 +1,43 @@
+import { Cluster } from "@/API/clusterService";
+import { getItems, Item } from "@/API/itemService";
 import { BackgroundWrapper } from "@/components/layout/background-wrapper";
 import { Heading } from "@/components/ui/heading";
 import { TopBar } from "@/components/ui/topBar";
-import { AppStore } from "@/config/storage/storage";
-import { CategoryCard } from "@/screens/categories/components/categoryCard";
-import { useEffect } from "react";
+import { ClusterList } from "@/screens/categories/components/clusterList";
+import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
+  const insets = useSafeAreaInsets();
+
+  const [clusters, setClusters] = useState<Cluster[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
+
   useEffect(() => {
-    const loadMessages = async () => {
-      let messages = await AppStore.messages.getItem();
-      console.log("======> Messages", messages);
-      await AppStore.messages.setItem(["m1", "m2", "m3"]);
-      messages = await AppStore.messages.getItem();
-      console.log("======> Messages 2", messages);
-      await AppStore.messages.deleteAll();
-      messages = await AppStore.messages.getItem();
-      console.log("======> Messages 3", messages);
+    const fetchData = async () => {
+      const itemsData = await getItems();
+      setItems(itemsData);
     };
-    loadMessages();
+
+    fetchData();
   }, []);
 
   return (
     <BackgroundWrapper>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { paddingTop: insets.top + 60 },
+        ]}
+      >
         <TopBar />
-        <Heading>Analytics</Heading>
-        <CategoryCard 
-          title="Mi Nota"
-          description="Esta es una descripción de ejemplo para la tarjeta."
-          />
+
+        <Heading style={styles.heading}>
+          Analytics
+        </Heading>
+
+        <ClusterList clusters={clusters} items={items} />
       </View>
     </BackgroundWrapper>
   );
@@ -38,7 +46,9 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingHorizontal: 16,
+  },
+  heading: {
+    marginBottom: 16,
   },
 });

@@ -7,9 +7,11 @@ import { NoteBar } from "@/components/ui/noteBar";
 import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
 import { getClusters } from "@/API/clusterService";
 import { useEffect } from "react";
+import { useTheme } from "react-native-paper";
 
 export const NotesScreen = () => {
   const { colors } = useTheme();
+  const messages = textMessageMocks;
   
   useEffect(() => {
     const fetchData = async () => {
