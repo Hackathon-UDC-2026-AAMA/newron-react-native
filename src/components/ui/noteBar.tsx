@@ -114,53 +114,6 @@ export const NoteBar = ({
     }
   }, [isRecording]);
 
-  /*const pickFile = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        
-        copyToCacheDirectory: true,
-        multiple: false,
-      });
-
-      if (result.canceled) return;
-
-      const asset = result.assets[0];
-
-      // 1. Get the basics
-      const fileName = asset.name;
-      const fileUri = asset.uri;
-      const fileExtension = fileName.split(".").pop()?.toLowerCase();
-
-      // 2. Grab the Base64 (Using string 'base64' to dodge the TS error)
-      const base64Content = await FileSystem.readAsStringAsync(fileUri, {
-        encoding: "base64",
-      });
-
-      // 3. Your constants
-      const myFileData: DocumentFile = {
-        name: fileName,
-        extension: fileExtension,
-        base64: base64Content,
-        path: fileUri, // Keep this for your file explorer logic
-      };
-      
-
-      console.log("Success! File ready:", myFileData.name);
-
-      if (onDocumentMessage) {
-        const newMessages = await onDocumentMessage(myFileData);
-        setMessages(newMessages);
-      }
-
-      if (Platform.OS === "android") {
-        ToastAndroid.show(`${fileName} attached`, ToastAndroid.SHORT);
-      }
-    } catch (error) {
-      console.error("Error picking file:", error);
-      Alert.alert("Error", "Could not process file.");
-    }
-  };*/
-
   const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -334,43 +287,6 @@ const styles = StyleSheet.create({
   },
   input: { flex: 1, fontSize: 16, paddingVertical: 8, color: "#000" },
   iconButton: { padding: 6 },
-  actionButton: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 8,
-  },
-  outerContainer: {
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  container: {
-    width: BAR_WIDTH,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F0F0F0",
-    borderRadius: 30,
-    padding: 6,
-  },
-  inputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 25,
-    paddingHorizontal: 10,
-    height: 45,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    paddingHorizontal: 6,
-  },
-  iconButton: {
-    padding: 6,
-  },
   actionButton: {
     width: 45,
     height: 45,
