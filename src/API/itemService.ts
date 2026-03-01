@@ -1,5 +1,4 @@
-import apiClient from "./client";
-
+import { getApiClient } from "./client";
 
 export interface Item {
   id: number;
@@ -11,6 +10,8 @@ export interface Item {
 
 export const getItems = async (): Promise<Item[]> => {
   try {
+    const apiClient = await getApiClient();
+
     const response = await apiClient.get<Item[]>("/items");
 
     const cleanedItems = response.data.map(

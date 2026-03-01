@@ -50,17 +50,14 @@ export const SyncButton = ({ disabled }: Props) => {
 
     if (fileMessages && fileMessages.length > 0) {
       for (const file of fileMessages) {
+        //console.log("+++++++++++++++++++++++++++Files: ", file)
         const fileDocument = file.data as DocumentFile;
+        const path = file.data.path;
 
-        console.log(
-          "=================????????> FILE",
-          fileDocument.extension,
-          fileDocument.name,
-          fileDocument.path,
-        );
+        
         try {
           await sendIngestFile({
-            file: fileDocument.path
+            file: fileDocument
           });
           console.log("File successfully ingested:", fileDocument.name);
         } catch (error) {

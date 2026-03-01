@@ -1,4 +1,6 @@
-import apiClient from "./client";
+import apiClient, { getApiClient } from '@/API/client';
+import { DocumentFile } from '@/types/document';
+
 
 export interface IngestRequest {
   input: string;
@@ -40,6 +42,8 @@ export interface IngestFileResponse {
 
 export const sendIngest = async (input: string): Promise<IngestResponse> => {
   try {
+    const apiClient = await getApiClient();
+    
     const { data } = await apiClient.post<IngestResponse>("/ingest", { input });
 
     return data;
@@ -53,6 +57,8 @@ export const sendIngestMultiple = async (
   inputs: { input: string }[], // Accept an array of objects with 'input' as a string
 ): Promise<IngestResponse> => {
   try {
+    const apiClient = await getApiClient();
+
     const textArr = inputs.map((input) => {
       return input.input;
     });
@@ -74,6 +80,8 @@ export const sendIngestAudio = async (
   uri: string,
 ): Promise<IngestAudioResponse> => {
   try {
+    const apiClient = await getApiClient();
+
     const formData = new FormData();
 
     const fileName = uri.split("/").pop() || "audio.m4a";
@@ -83,7 +91,7 @@ export const sendIngestAudio = async (
       name: fileName,
       type: "audio/m4a",
     } as any);
-
+    console.log("'''''''''''''''''''''FormData", formData, uri);
     const { data } = await apiClient.post<IngestAudioResponse>(
       "/ingest-audio",
       formData,
@@ -127,18 +135,28 @@ export const sendIngestFile = async (file: {
 };
 */
 
-export const sendIngestFile = async (file: {
-  file: string;
-}): Promise<IngestResponse> => {
+export const sendIngestFile = async (
+  file: DocumentFile
+): Promise<IngestResponse> => {
+  const apiClient = await getApiClient();
+
   const formData = new FormData();
 
-  // Append the single Base64 file to FormData with a key 'file'
-  formData.append("file", file.file); // Use 'file' as the key
+    formData.append("file", {
+      uri: file.file.path,
+      name: "test",
+      type: "*/*",
+    } as any);
 
-  console.log("============>FORMDATA", formData);
-
+  console.log("============>FORMDATA", formData, file.file.path);
+  const headers= {
+      headers:{
+        "Content-Type": "application/x-www-form-url-encoded",
+      }
+    }
+  
   try {
-    const { data } = await apiClient.post<IngestResponse>("/ingest", formData);
+    const { data } = await apiClient.post("/ingest", formData, headers);
 
     return data;
   } catch (error: any) {
