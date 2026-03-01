@@ -29,21 +29,21 @@ export const TabNavigator = () => {
       <Tabs.Screen
         name="index"
         options={{
-          title: "My notes",
+          title: "Mis notas",
           tabBarIcon: ({ color }) => <NotepadText size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="my-newron"
         options={{
-          title: "My Newron",
+          title: "Mi Newron",
           tabBarIcon: ({ color }) => <BrainCircuit size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          title: "Ajustes",
           tabBarIcon: ({ color }) => <Settings size={28} color={color} />,
         }}
       />
