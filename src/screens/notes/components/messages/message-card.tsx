@@ -27,7 +27,7 @@ export const MessageCard = ({
             height: 4,
             width: "100%",
             alignItems: "flex-end",
-            marginBottom: 4,
+            marginBottom: 16,
           }}
         >
           <View

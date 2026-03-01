@@ -46,7 +46,7 @@ export const NoteBar = ({
   useEffect(() => {
     if (hasShareIntent && shareIntent) {
       const sharedValue =
-        shareIntent.webUrl || shareIntent.text || shareIntent.value;
+        shareIntent.webUrl || shareIntent.text || (shareIntent as any).value;
 
       if (sharedValue) {
         setText(sharedValue);
