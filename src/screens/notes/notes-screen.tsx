@@ -10,7 +10,6 @@ import { PenOff } from "lucide-react-native";
 import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
 import { getClusters } from "@/API/clusterService";
 import { useEffect } from "react";
-import { useTheme } from "react-native-paper";
 
 export const NotesScreen = () => {
   const { colors } = useTheme();
