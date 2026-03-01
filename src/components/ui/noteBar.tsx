@@ -81,7 +81,7 @@ export const NoteBar = ({
               duration: 400,
               useNativeDriver: true,
             }),
-          ])
+          ]),
         ),
         Animated.loop(
           Animated.sequence([
@@ -95,7 +95,7 @@ export const NoteBar = ({
               duration: 400,
               useNativeDriver: true,
             }),
-          ])
+          ]),
         ),
       ]).start();
     } else {
@@ -117,7 +117,7 @@ export const NoteBar = ({
   const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*",
+        type: "*/*", // You can also restrict this to specific types (e.g., "application/pdf")
         copyToCacheDirectory: true,
         multiple: false,
       });
@@ -125,10 +125,40 @@ export const NoteBar = ({
       if (result.canceled) return;
 
       const file = result.assets[0];
-      if (onDocumentMessage) {
-        const newMessages = await onDocumentMessage({ path: file.uri });
-        setMessages(newMessages);
+
+      // Check if the file is already base64-encoded
+      if (file.base64) {
+        // Use the base64 from the file directly
+        const base64 = file.base64;
+        console.log("Base64 found:", base64);
+
+        // Send the base64 data
+        if (onDocumentMessage) {
+          const newMessages = await onDocumentMessage({
+            base64,
+            path: file.uri,
+          });
+          setMessages(newMessages);
+        }
+      } else {
+        // If no base64, read the file content manually as base64
+        const base64 = await FileSystem.readAsStringAsync(file.uri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+
+        console.log("Manually read base64:", base64);
+
+        // Send the base64 data
+        if (onDocumentMessage) {
+          const newMessages = await onDocumentMessage({
+            base64,
+            path: file.uri,
+          });
+          setMessages(newMessages);
+        }
       }
+
+      // Log file details
       console.log("Archivo seleccionado:");
       console.log("Nombre:", file.name);
       console.log("URI:", file.uri);

@@ -1,16 +1,15 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const IP = AsyncStorage.getItem("server_ip")
+const IP = AsyncStorage.getItem("server_ip");
 
 const apiClient = axios.create({
+  baseURL: "http://172.20.10.2:8000", //`https://webhook.site/950eef67-edad-4974-bb9d-2d512d556e64`,
 
-baseURL: `http://${IP}:8000`,
-
-headers: {
-  "Content-Type": "application/json",
-},
-timeout: 120_000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  timeout: 120_000,
 });
 
 apiClient.interceptors.request.use(
@@ -24,7 +23,7 @@ apiClient.interceptors.request.use(
   (error) => {
     console.error("❌ [REQUEST ERROR]", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 apiClient.interceptors.response.use(

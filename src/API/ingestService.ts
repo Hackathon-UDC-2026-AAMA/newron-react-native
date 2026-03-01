@@ -1,4 +1,5 @@
 import apiClient from "./client";
+import * as FileSystem from "expo-file-system/legacy";
 
 export interface IngestRequest {
   input: string;
@@ -128,21 +129,67 @@ export const sendIngestFile = async (file: {
 */
 
 export const sendIngestFile = async (file: {
-  file: string;
-}): Promise<IngestResponse> => {
+  // Accept either base64 or a uri (RN-style)
+  file?: string; // base64 string
+  uri?: string; // file://... or content://...
+  name?: string;
+  type?: string;
+}): Promise<IngestFileResponse> => {
   const formData = new FormData();
-
-  // Append the single Base64 file to FormData with a key 'file'
-  formData.append("file", file.file); // Use 'file' as the key
-
-  console.log("============>FORMDATA", formData);
+  let tmpPath: string | undefined;
 
   try {
-    const { data } = await apiClient.post<IngestResponse>("/ingest", formData);
+    if (file.uri) {
+      // RN-friendly append: an object with uri/name/type
+      const name = file.name ?? file.uri.split("/").pop() ?? "file";
+      const type = file.type ?? "application/pdf";
+      formData.append("file", { uri: file.uri, name, type } as any);
+    } else if (file.file) {
+      // Clean base64 (remove data URI header and whitespace/newlines)
+      let base64Data = file.file;
+      if (base64Data.includes("base64,")) {
+        base64Data = base64Data.split("base64,")[1];
+      }
+      base64Data = base64Data.replace(/\s/g, "");
+
+      // Write a temporary file in cache and append its uri to FormData
+      tmpPath = `${FileSystem.cacheDirectory}ingest-file-${Date.now()}.pdf`;
+      await FileSystem.writeAsStringAsync(tmpPath, base64Data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const name = file.name ?? "file.pdf";
+      const type = file.type ?? "application/pdf";
+      formData.append("file", { uri: tmpPath, name, type } as any);
+    } else {
+      throw new Error("No file provided to sendIngestFile");
+    }
+
+    const { data } = await apiClient.post<IngestFileResponse>(
+      "/ingest-file",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
 
     return data;
   } catch (error: any) {
-    console.log("❌ Error en ingest:", error.response?.data || error.message);
+    console.log(
+      "❌ Error en ingest-file:",
+      error.response?.data || error.message,
+    );
     throw error;
+  } finally {
+    // cleanup tmp file if created
+    if (tmpPath) {
+      try {
+        await FileSystem.deleteAsync(tmpPath, { idempotent: true });
+      } catch {
+        // ignore cleanup errors
+      }
+    }
   }
 };
