@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Mic, Send, Paperclip, Voicemail } from "lucide-react-native";
 import { useAudioRecorderHook } from "../voiceRecord/useAudioRecorderHook";
-import { sendIngestAudio } from "@/API/ingestService";
+import { sendIngestAudio, sendIngestFile } from "@/API/ingestService";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import { Text, useTheme } from "react-native-paper";
