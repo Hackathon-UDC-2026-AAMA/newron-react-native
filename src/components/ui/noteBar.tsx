@@ -126,36 +126,23 @@ export const NoteBar = ({
 
       const file = result.assets[0];
 
-      // Check if the file is already base64-encoded
-      if (file.base64) {
-        // Use the base64 from the file directly
-        const base64 = file.base64;
-        console.log("Base64 found:", base64);
+      // Build the DocumentFile object. Prefer the URI + mimeType; include base64 only if provided by the picker.
+      const documentFile: DocumentFile = {
+        name: file.name,
+        extension: file.name?.split(".").pop()?.toLowerCase(),
+        path: file.uri,
+        mimeType: (file as any).mimeType || (file as any).type || undefined,
+      };
 
-        // Send the base64 data
-        if (onDocumentMessage) {
-          const newMessages = await onDocumentMessage({
-            base64,
-            path: file.uri,
-          });
-          setMessages(newMessages);
-        }
-      } else {
-        // If no base64, read the file content manually as base64
-        const base64 = await FileSystem.readAsStringAsync(file.uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+      // If the picker already provided base64, include it; otherwise avoid reading base64 to save memory
+      if ((file as any).base64) {
+        documentFile.base64 = (file as any).base64;
+      }
 
-        console.log("Manually read base64:", base64);
-
-        // Send the base64 data
-        if (onDocumentMessage) {
-          const newMessages = await onDocumentMessage({
-            base64,
-            path: file.uri,
-          });
-          setMessages(newMessages);
-        }
+      // Persist the message using onDocumentMessage (which expects a DocumentFile)
+      if (onDocumentMessage) {
+        const newMessages = await onDocumentMessage(documentFile);
+        setMessages(newMessages);
       }
 
       // Log file details

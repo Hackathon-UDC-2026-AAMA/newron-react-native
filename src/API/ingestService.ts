@@ -138,6 +138,19 @@ export const sendIngestFile = async (file: {
   const formData = new FormData();
   let tmpPath: string | undefined;
 
+  const inferExtension = (name?: string, type?: string) => {
+    if (name) {
+      const ext = name.split(".").pop()?.toLowerCase();
+      if (ext) return ext;
+    }
+    if (!type) return "bin";
+    if (type.includes("pdf")) return "pdf";
+    if (type.includes("msword") || type.includes("word")) return "doc";
+    if (type.includes("officedocument.wordprocessingml")) return "docx";
+    if (type.includes("text")) return "txt";
+    return "bin";
+  };
+
   try {
     if (file.uri) {
       // RN-friendly append: an object with uri/name/type
@@ -153,7 +166,8 @@ export const sendIngestFile = async (file: {
       base64Data = base64Data.replace(/\s/g, "");
 
       // Write a temporary file in cache and append its uri to FormData
-      tmpPath = `${FileSystem.cacheDirectory}ingest-file-${Date.now()}.pdf`;
+      const ext = inferExtension(file.name, file.type);
+      tmpPath = `${FileSystem.cacheDirectory}ingest-file-${Date.now()}.${ext}`;
       await FileSystem.writeAsStringAsync(tmpPath, base64Data, {
         encoding: FileSystem.EncodingType.Base64,
       });

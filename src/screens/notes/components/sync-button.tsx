@@ -69,7 +69,7 @@ export const SyncButton = ({ disabled }: Props) => {
           if (fileDocument.name) {
             payload.name = fileDocument.name;
           }
-          payload.type = toMimeType(fileDocument.name, fileDocument.extension);
+          payload.type = fileDocument.mimeType ?? toMimeType(fileDocument.name, fileDocument.extension);
 
           // If neither uri nor base64 exists, skip this file and log
           if (!payload.uri && !payload.file) {
@@ -143,7 +143,10 @@ const toMimeType = (name?: string, extension?: string) => {
   const ext = (extFromName || extension || "").replace(".", "").toLowerCase();
 
   const map: Record<string, string> = {
-    pdf: "application/pdf",
+      pdf: "application/pdf",
+      doc: "application/msword",
+      docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      txt: "text/plain",
   };
   return map[ext] ?? "application/octet";
 };

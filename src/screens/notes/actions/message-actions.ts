@@ -68,6 +68,7 @@ export const onRecordingMessage = async (audio: Recording) => {
     type: "Audio",
     data: audio,
     timestamp: Date.now(),
+    processed: false,
   };
 
   if (messages) {
@@ -75,4 +76,4 @@ export const onRecordingMessage = async (audio: Recording) => {
   } else messageList = [newMessage];
 
   return messageList;
-}
+};

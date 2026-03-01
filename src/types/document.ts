@@ -3,4 +3,5 @@ export interface DocumentFile {
   extension?: string;
   base64?: string;
   path: string;
+  mimeType?: string;
 }
