@@ -11,13 +11,10 @@ import {
 } from "./actions/message-actions";
 import { useMessageContext } from "@/context/message-context";
 import { PenOff } from "lucide-react-native";
-<<<<<<< HEAD
 import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
 import { getClusters } from "@/API/clusterService";
 import { useEffect } from "react";
-=======
 import { SyncButton } from "./components/sync-button";
->>>>>>> origin/dev
 
 export const NotesScreen = () => {
   const { colors } = useTheme();
