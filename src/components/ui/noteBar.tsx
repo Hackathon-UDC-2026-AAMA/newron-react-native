@@ -38,6 +38,26 @@ export const NoteBar = ({
   const [text, setText] = useState("");
 
   const { startRecording, stopRecording, isRecording } = useAudioRecorderHook();
+  const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
+
+  const { startRecording, stopRecording, isRecording } = useAudioRecorderHook();
+
+  useEffect(() => {
+    if (hasShareIntent && shareIntent) {
+      const sharedValue =
+        shareIntent.webUrl || shareIntent.text || shareIntent.value;
+
+      if (sharedValue) {
+        setText(sharedValue);
+
+        if (Platform.OS === "android") {
+          ToastAndroid.show("Enlace recibido", ToastAndroid.SHORT);
+        }
+
+        resetShareIntent();
+      }
+    }
+  }, [hasShareIntent, shareIntent]);
 
   const hasText = text.trim().length > 0;
 
@@ -139,31 +159,32 @@ export const NoteBar = ({
       Alert.alert("Error", "Could not process file.");
     }
   };*/
+  const hasText = text.trim().length > 0;
 
   const pickFile = async () => {
-        try {
-            const result = await DocumentPicker.getDocumentAsync({
-                type: "*/*",
-                copyToCacheDirectory: true,
-                multiple: false,
-            });
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
 
-            if (result.canceled) return;
+      if (result.canceled) return;
 
-            const file = result.assets[0];
+      const file = result.assets[0];
             if (onDocumentMessage){ 
               const newMessages = await onDocumentMessage({path: file.uri})
               setMessages(newMessages);
             }
-            console.log("Archivo seleccionado:");
-            console.log("Nombre:", file.name);
-            console.log("URI:", file.uri);
-            console.log("Tipo:", file.mimeType);
-            console.log("Tamaño:", file.size);
-        } catch (error) {
-            console.log("Error seleccionando archivo:", error);
-        }
-    };
+      console.log("Archivo seleccionado:");
+      console.log("Nombre:", file.name);
+      console.log("URI:", file.uri);
+      console.log("Tipo:", file.mimeType);
+      console.log("Tamaño:", file.size);
+    } catch (error) {
+      console.log("Error seleccionando archivo:", error);
+    }
+  };
 
 
   const handleActionPress = async () => {
@@ -182,8 +203,13 @@ export const NoteBar = ({
       await startRecording();
       return;
     }
+    if (!isRecording) {
+      await startRecording();
+      return;
+    }
 
     const recording = await stopRecording();
+
     if (!recording) return;
 
     try {
@@ -291,5 +317,51 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 8,
+  },
+  outerContainer: {
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  container: {
+    width: BAR_WIDTH,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F0F0F0",
+    borderRadius: 30,
+    padding: 6,
+  },
+  inputContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    height: 45,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    paddingHorizontal: 6,
+  },
+  iconButton: {
+    padding: 6,
+  },
+  actionButton: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
+  },
+  micButton: {
+    backgroundColor: "#25D366",
+  },
+  sendButton: {
+    backgroundColor: "#25D366",
+  },
+  recordingButton: {
+    backgroundColor: "#E53935",
   },
 });

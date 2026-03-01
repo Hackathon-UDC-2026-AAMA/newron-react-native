@@ -7,30 +7,30 @@
     "icon": "./assets/images/icon.png",
     "scheme": "newronreactnative",
     "userInterfaceStyle": "automatic",
-
     "ios": {
       "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.newron.app",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Esta app necesita acceso al micrófono para grabar audio."
       }
     },
-
     "android": {
-      "permissions": ["RECORD_AUDIO"],
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
+      "permissions": [
+        "RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.CAMERA",
+        "RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.CAMERA"
+      ],
+      "predictiveBackGestureEnabled": false,
+      "package": "com.newron.app"
     },
-
     "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
-
     "plugins": [
       "expo-router",
       [
@@ -61,9 +61,25 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-share-extension",
+      "expo-share-intent",
+      [
+        "expo-share-intent",
+        {
+          "android": {
+            "intentFilters": [
+              {
+                "action": "SEND",
+                "data": {
+                  "mimeType": "text/plain"
+                }
+              }
+            ]
+          }
+        }
+      ]
     ],
-
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
