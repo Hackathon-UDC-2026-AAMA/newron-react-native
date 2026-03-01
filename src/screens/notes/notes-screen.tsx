@@ -11,7 +11,7 @@ import {
 } from "./actions/message-actions";
 import { useMessageContext } from "@/context/message-context";
 import { PenOff } from "lucide-react-native";
-import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
+import { getItems, groupItemsByCluster } from "@/API/itemService";
 import { getClusters } from "@/API/clusterService";
 import { useEffect } from "react";
 import { SyncButton } from "./components/sync-button";
@@ -19,14 +19,12 @@ import { SyncButton } from "./components/sync-button";
 export const NotesScreen = () => {
   const { colors } = useTheme();
   const { messages } = useMessageContext();
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const itemsResponse = await getItems();
         const clustersResponse = await getClusters();
-
-
 
         console.log("items:", itemsResponse);
         console.log("clusters:", clustersResponse);
@@ -38,6 +36,8 @@ export const NotesScreen = () => {
 
     fetchData();
   }, []);
+
+  console.log("messages:", messages);
 
   return (
     <ScreenContainer>
@@ -94,10 +94,6 @@ export const NotesScreen = () => {
     </ScreenContainer>
   );
 };
-function setGroupedItems(grouped: Record<number, Item[]>) {
-  throw new Error("Function not implemented.");
-}
-
 
 const styles = StyleSheet.create({
   separator: {

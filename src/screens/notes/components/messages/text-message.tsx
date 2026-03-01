@@ -8,11 +8,18 @@ interface Props extends MessageCardProps {
   isLink?: boolean;
 }
 
-export const TextMessage = ({ content, color, timestamp, isLink }: Props) => {
+export const TextMessage = ({
+  content,
+  color,
+  timestamp,
+  isLink,
+  synchronized,
+}: Props) => {
   const { colors } = useTheme();
 
   return (
     <MessageCard
+      synchronized={synchronized}
       color={color}
       timestamp={timestamp}
       icon={

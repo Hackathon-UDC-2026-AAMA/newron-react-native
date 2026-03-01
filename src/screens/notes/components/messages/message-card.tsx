@@ -22,7 +22,14 @@ export const MessageCard = ({
   return (
     <Card style={{ backgroundColor: color }}>
       <Card.Content>
-        <View style={{ height: 4, width: "100%", alignItems: "flex-end" }}>
+        <View
+          style={{
+            height: 4,
+            width: "100%",
+            alignItems: "flex-end",
+            marginBottom: 4,
+          }}
+        >
           <View
             style={{
               height: 12,
