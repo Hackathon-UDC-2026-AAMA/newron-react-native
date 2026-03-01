@@ -1,4 +1,3 @@
-import { File } from "expo-file-system";
 import { Recording } from "./recording";
 import { DocumentFile } from "./document";
 
@@ -9,4 +8,5 @@ export interface Message {
   type: MessageType;
   data: string | Recording | DocumentFile;
   timestamp: number;
+  processed: boolean;
 }

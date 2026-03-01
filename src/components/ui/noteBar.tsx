@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Mic, Send, Paperclip, Voicemail } from "lucide-react-native";
 import { useAudioRecorderHook } from "../voiceRecord/useAudioRecorderHook";
-import { sendIngestAudio } from "@/API/ingestService";
+import { sendIngestAudio, sendIngestFile } from "@/API/ingestService";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import { Text, useTheme } from "react-native-paper";
@@ -22,6 +22,8 @@ import { Message } from "@/types/message";
 import { DocumentFile } from "@/types/document";
 import { Recording } from "@/types/recording";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppStore } from "@/config/storage/storage";
+import { useShareIntent } from "expo-share-intent";
 
 interface Props {
   onTextMessage?: (content: string) => Promise<Message[]>;
@@ -39,6 +41,24 @@ export const NoteBar = ({
   const [text, setText] = useState("");
 
   const { startRecording, stopRecording, isRecording } = useAudioRecorderHook();
+  const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
+
+  useEffect(() => {
+    if (hasShareIntent && shareIntent) {
+      const sharedValue =
+        shareIntent.webUrl || shareIntent.text || shareIntent.value;
+
+      if (sharedValue) {
+        setText(sharedValue);
+
+        if (Platform.OS === "android") {
+          ToastAndroid.show("Enlace recibido", ToastAndroid.SHORT);
+        }
+
+        resetShareIntent();
+      }
+    }
+  }, [hasShareIntent, shareIntent]);
 
   const hasText = text.trim().length > 0;
 
@@ -94,10 +114,10 @@ export const NoteBar = ({
     }
   }, [isRecording]);
 
-  const pickFile = async () => {
+  /*const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*",
+        
         copyToCacheDirectory: true,
         multiple: false,
       });
@@ -123,6 +143,7 @@ export const NoteBar = ({
         base64: base64Content,
         path: fileUri, // Keep this for your file explorer logic
       };
+      
 
       console.log("Success! File ready:", myFileData.name);
 
@@ -137,6 +158,31 @@ export const NoteBar = ({
     } catch (error) {
       console.error("Error picking file:", error);
       Alert.alert("Error", "Could not process file.");
+    }
+  };*/
+
+  const pickFile = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+
+      if (result.canceled) return;
+
+      const file = result.assets[0];
+      if (onDocumentMessage) {
+        const newMessages = await onDocumentMessage({ path: file.uri });
+        setMessages(newMessages);
+      }
+      console.log("Archivo seleccionado:");
+      console.log("Nombre:", file.name);
+      console.log("URI:", file.uri);
+      console.log("Tipo:", file.mimeType);
+      console.log("Tamaño:", file.size);
+    } catch (error) {
+      console.log("Error seleccionando archivo:", error);
     }
   };
 
@@ -156,8 +202,13 @@ export const NoteBar = ({
       await startRecording();
       return;
     }
+    if (!isRecording) {
+      await startRecording();
+      return;
+    }
 
     const recording = await stopRecording();
+
     if (!recording) return;
 
     try {
@@ -290,5 +341,51 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 8,
+  },
+  outerContainer: {
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  container: {
+    width: BAR_WIDTH,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F0F0F0",
+    borderRadius: 30,
+    padding: 6,
+  },
+  inputContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    height: 45,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    paddingHorizontal: 6,
+  },
+  iconButton: {
+    padding: 6,
+  },
+  actionButton: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 8,
+  },
+  micButton: {
+    backgroundColor: "#25D366",
+  },
+  sendButton: {
+    backgroundColor: "#25D366",
+  },
+  recordingButton: {
+    backgroundColor: "#E53935",
   },
 });

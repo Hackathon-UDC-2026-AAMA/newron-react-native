@@ -1,6 +1,6 @@
 export interface DocumentFile {
-  name: string;
+  name?: string;
   extension?: string;
-  base64: string;
+  base64?: string;
   path: string;
 }

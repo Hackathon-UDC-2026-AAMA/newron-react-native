@@ -40,13 +40,6 @@ export const TabNavigator = () => {
           tabBarIcon: ({ color }) => <BrainCircuit size={28} color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Ajustes",
-          tabBarIcon: ({ color }) => <Settings size={28} color={color} />,
-        }}
-      />
     </Tabs>
   );
 };

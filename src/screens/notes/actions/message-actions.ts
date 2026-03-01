@@ -17,6 +17,7 @@ export const onTextMessage = async (content: string) => {
       type: "Link",
       data: content,
       timestamp: Date.now(),
+      processed: false,
     };
   } else {
     newMessage = {
@@ -24,6 +25,7 @@ export const onTextMessage = async (content: string) => {
       type: "Text",
       data: content,
       timestamp: Date.now(),
+      processed: false,
     };
   }
 
@@ -45,6 +47,7 @@ export const onDocumentMessage = async (documentFile: DocumentFile) => {
     type: "File",
     data: documentFile,
     timestamp: Date.now(),
+    processed: false,
   };
 
   if (messages) {

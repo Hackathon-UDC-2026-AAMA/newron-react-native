@@ -11,14 +11,51 @@ import {
 } from "./actions/message-actions";
 import { useMessageContext } from "@/context/message-context";
 import { PenOff } from "lucide-react-native";
+<<<<<<< HEAD
+import { getItems, groupItemsByCluster, Item } from "@/API/itemService";
+import { getClusters } from "@/API/clusterService";
+import { useEffect } from "react";
+=======
+import { SyncButton } from "./components/sync-button";
+>>>>>>> origin/dev
 
 export const NotesScreen = () => {
-  const { messages } = useMessageContext();
   const { colors } = useTheme();
+  const { messages } = useMessageContext();
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const itemsResponse = await getItems();
+        const clustersResponse = await getClusters();
+
+
+
+        console.log("items:", itemsResponse);
+        console.log("clusters:", clustersResponse);
+        console.log("lista ordenada:", groupItemsByCluster(itemsResponse));
+      } catch (error) {
+        console.log("Error cargando datos:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <ScreenContainer>
-      <Heading style={{ marginBottom: 16 }}>Mis notas</Heading>
+      <View
+        style={{
+          width: "100%",
+          justifyContent: "space-between",
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
+        <Heading>Mis notas</Heading>
+        <SyncButton disabled={!messages || messages.length === 0} />
+      </View>
       <FlatList
         data={messages}
         ListEmptyComponent={() => (
@@ -60,6 +97,10 @@ export const NotesScreen = () => {
     </ScreenContainer>
   );
 };
+function setGroupedItems(grouped: Record<number, Item[]>) {
+  throw new Error("Function not implemented.");
+}
+
 
 const styles = StyleSheet.create({
   separator: {
