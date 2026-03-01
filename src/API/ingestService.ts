@@ -1,6 +1,7 @@
-import apiClient, { getApiClient } from '@/API/client';
-import { DocumentFile } from '@/types/document';
+import { getApiClient } from "@/API/client";
+import { DocumentFile } from "@/types/document";
 
+import * as FileSystem from "expo-file-system/legacy";
 
 export interface IngestRequest {
   input: string;
@@ -43,7 +44,7 @@ export interface IngestFileResponse {
 export const sendIngest = async (input: string): Promise<IngestResponse> => {
   try {
     const apiClient = await getApiClient();
-    
+
     const { data } = await apiClient.post<IngestResponse>("/ingest", { input });
 
     return data;
@@ -135,32 +136,83 @@ export const sendIngestFile = async (file: {
 };
 */
 
-export const sendIngestFile = async (
-  file: DocumentFile
-): Promise<IngestResponse> => {
+export const sendIngestFile = async (file: {
+  // Accept either base64 or a uri (RN-style)
+  file?: string; // base64 string
+  uri?: string; // file://... or content://...
+  name?: string;
+  type?: string;
+}): Promise<IngestFileResponse> => {
   const apiClient = await getApiClient();
-
   const formData = new FormData();
+  let tmpPath: string | undefined;
 
-    formData.append("file", {
-      uri: file.file.path,
-      name: "test",
-      type: "*/*",
-    } as any);
-
-  //console.log("============>FORMDATA", formData, file.file.path);
-  const headers= {
-      headers:{
-        "Content-Type": "application/x-www-form-url-encoded",
-      }
+  const inferExtension = (name?: string, type?: string) => {
+    if (name) {
+      const ext = name.split(".").pop()?.toLowerCase();
+      if (ext) return ext;
     }
-  
+    if (!type) return "bin";
+    if (type.includes("pdf")) return "pdf";
+    if (type.includes("msword") || type.includes("word")) return "doc";
+    if (type.includes("officedocument.wordprocessingml")) return "docx";
+    if (type.includes("text")) return "txt";
+    return "bin";
+  };
+
   try {
-    const { data } = await apiClient.post("/ingest", formData, headers);
+    if (file.uri) {
+      // RN-friendly append: an object with uri/name/type
+      const name = file.name ?? file.uri.split("/").pop() ?? "file";
+      const type = file.type ?? "application/pdf";
+      formData.append("file", { uri: file.uri, name, type } as any);
+    } else if (file.file) {
+      // Clean base64 (remove data URI header and whitespace/newlines)
+      let base64Data = file.file;
+      if (base64Data.includes("base64,")) {
+        base64Data = base64Data.split("base64,")[1];
+      }
+      base64Data = base64Data.replace(/\s/g, "");
+
+      // Write a temporary file in cache and append its uri to FormData
+      const ext = inferExtension(file.name, file.type);
+      tmpPath = `${FileSystem.cacheDirectory}ingest-file-${Date.now()}.${ext}`;
+      await FileSystem.writeAsStringAsync(tmpPath, base64Data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const name = file.name ?? "file.pdf";
+      const type = file.type ?? "application/pdf";
+      formData.append("file", { uri: tmpPath, name, type } as any);
+    } else {
+      throw new Error("No file provided to sendIngestFile");
+    }
+
+    const { data } = await apiClient.post<IngestFileResponse>(
+      "/ingest-file",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
 
     return data;
   } catch (error: any) {
-    console.log("❌ Error en ingest:", error.response?.data || error.message);
+    console.log(
+      "❌ Error en ingest-file:",
+      error.response?.data || error.message,
+    );
     throw error;
+  } finally {
+    // cleanup tmp file if created
+    if (tmpPath) {
+      try {
+        await FileSystem.deleteAsync(tmpPath, { idempotent: true });
+      } catch {
+        // ignore cleanup errors
+      }
+    }
   }
 };

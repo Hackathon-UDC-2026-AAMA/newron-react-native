@@ -1,6 +1,6 @@
-import apiClient from "@/API/client";
 import { sendIngestFile, sendIngestMultiple } from "@/API/ingestService";
 import { AppStore } from "@/config/storage/storage";
+import { useMessageContext } from "@/context/message-context";
 import { DocumentFile } from "@/types/document";
 import { Message } from "@/types/message";
 import { CloudSync } from "lucide-react-native";
@@ -15,12 +15,17 @@ export const SyncButton = ({ disabled }: Props) => {
   const { colors } = useTheme();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { setMessages } = useMessageContext();
+
   const handleSync = async () => {
     setIsLoading(true);
 
     const messages = await AppStore.messages.getItem();
 
-    if (!messages) return; // TODO: Toast no hay mensajes
+    if (!messages) {
+      setIsLoading(false);
+      return; // TODO: Toast no hay mensajes
+    }
 
     const unprocessedMessages = messages.filter(
       (message) => !message.processed,
@@ -52,19 +57,47 @@ export const SyncButton = ({ disabled }: Props) => {
       for (const file of fileMessages) {
         //console.log("+++++++++++++++++++++++++++Files: ", file)
         const fileDocument = file.data as DocumentFile;
-        const path = file.data.path;
 
-        
         try {
-          await sendIngestFile({
-            file: fileDocument
-          });
+          // Prefer sending the file URI when available (RN-friendly). Fall back to base64.
+          const payload: any = {};
+          if (fileDocument.path) {
+            payload.uri = normalizeFileUri(fileDocument.path);
+          }
+          if (fileDocument.base64) {
+            payload.file = fileDocument.base64;
+          }
+          if (fileDocument.name) {
+            payload.name = fileDocument.name;
+          }
+          payload.type =
+            fileDocument.mimeType ??
+            toMimeType(fileDocument.name, fileDocument.extension);
+
+          // If neither uri nor base64 exists, skip this file and log
+          if (!payload.uri && !payload.file) {
+            console.warn(
+              "Skipping file sync, no uri or base64 available:",
+              fileDocument,
+            );
+            continue;
+          }
+
+          await sendIngestFile(payload);
           console.log("File successfully ingested:", fileDocument.name);
         } catch (error) {
           console.error("Error sending file:", fileDocument.name, error);
         }
       }
     }
+
+    const processedMessages = messages.map((message) => ({
+      ...message,
+      processed: true,
+    }));
+
+    setMessages(processedMessages);
+
     setIsLoading(false);
   };
   return (
@@ -114,6 +147,9 @@ const toMimeType = (name?: string, extension?: string) => {
 
   const map: Record<string, string> = {
     pdf: "application/pdf",
+    doc: "application/msword",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    txt: "text/plain",
   };
   return map[ext] ?? "application/octet";
 };

@@ -14,7 +14,7 @@ export const getApiClient = async () => {
   }
 
   apiClient = axios.create({
-    baseURL: `http://${IP}:8000`,
+    baseURL: `http://172.20.10.2:8000`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -33,7 +33,7 @@ export const getApiClient = async () => {
     (error) => {
       console.error("❌ [REQUEST ERROR]", error);
       return Promise.reject(error);
-    }
+    },
   );
 
   // Interceptor response
@@ -52,10 +52,8 @@ export const getApiClient = async () => {
 
       console.error(`❌ [ERROR] ${method} ${url} - Status: ${status}`);
       return Promise.reject(error);
-    }
+    },
   );
-
   return apiClient;
 };
-
 export default getApiClient;

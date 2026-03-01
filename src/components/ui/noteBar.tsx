@@ -46,7 +46,7 @@ export const NoteBar = ({
   useEffect(() => {
     if (hasShareIntent && shareIntent) {
       const sharedValue =
-        shareIntent.webUrl || shareIntent.text || shareIntent.value;
+        shareIntent.webUrl || shareIntent.text || (shareIntent as any).value;
 
       if (sharedValue) {
         setText(sharedValue);
@@ -81,7 +81,7 @@ export const NoteBar = ({
               duration: 400,
               useNativeDriver: true,
             }),
-          ])
+          ]),
         ),
         Animated.loop(
           Animated.sequence([
@@ -95,7 +95,7 @@ export const NoteBar = ({
               duration: 400,
               useNativeDriver: true,
             }),
-          ])
+          ]),
         ),
       ]).start();
     } else {
@@ -117,7 +117,7 @@ export const NoteBar = ({
   const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*",
+        type: "*/*", // You can also restrict this to specific types (e.g., "application/pdf")
         copyToCacheDirectory: true,
         multiple: false,
       });
@@ -125,15 +125,32 @@ export const NoteBar = ({
       if (result.canceled) return;
 
       const file = result.assets[0];
+
+      // Build the DocumentFile object. Prefer the URI + mimeType; include base64 only if provided by the picker.
+      const documentFile: DocumentFile = {
+        name: file.name,
+        extension: file.name?.split(".").pop()?.toLowerCase(),
+        path: file.uri,
+        mimeType: (file as any).mimeType || (file as any).type || undefined,
+      };
+
+      // If the picker already provided base64, include it; otherwise avoid reading base64 to save memory
+      if ((file as any).base64) {
+        documentFile.base64 = (file as any).base64;
+      }
+
+      // Persist the message using onDocumentMessage (which expects a DocumentFile)
       if (onDocumentMessage) {
-        const newMessages = await onDocumentMessage({ path: file.uri });
+        const newMessages = await onDocumentMessage(documentFile);
         setMessages(newMessages);
       }
-      //console.log("Archivo seleccionado:");
-      //console.log("Nombre:", file.name);
-      //console.log("URI:", file.uri);
-      //console.log("Tipo:", file.mimeType);
-      //console.log("Tamaño:", file.size);
+
+      // Log file details
+      console.log("Archivo seleccionado:");
+      console.log("Nombre:", file.name);
+      console.log("URI:", file.uri);
+      console.log("Tipo:", file.mimeType);
+      console.log("Tamaño:", file.size);
     } catch (error) {
       console.log("Error seleccionando archivo:", error);
     }

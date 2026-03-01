@@ -7,6 +7,7 @@ export interface MessageCardProps extends PropsWithChildren {
   color?: string;
   timestamp: number;
   icon?: React.ReactNode;
+  synchronized?: boolean;
 }
 
 export const MessageCard = ({
@@ -14,12 +15,30 @@ export const MessageCard = ({
   color = "#FFFFFF",
   timestamp,
   icon,
+  synchronized,
 }: MessageCardProps) => {
   const { colors } = useTheme();
 
   return (
     <Card style={{ backgroundColor: color }}>
       <Card.Content>
+        <View
+          style={{
+            height: 4,
+            width: "100%",
+            alignItems: "flex-end",
+            marginBottom: 16,
+          }}
+        >
+          <View
+            style={{
+              height: 12,
+              width: 12,
+              backgroundColor: synchronized ? "#4CAF50" : "#F44336",
+              borderRadius: 8,
+            }}
+          />
+        </View>
         <View style={styles.row}>
           {icon && (
             <View style={styles.iconOuterContainer}>

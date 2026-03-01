@@ -28,7 +28,7 @@ export const ScanQR = () => {
     } catch (error) {
       console.error("Connection error:", error);
       alert(
-        "No se pudo conectar con el servidor. Revisa que estés en el mismo WiFi."
+        "No se pudo conectar con el servidor. Revisa que estés en el mismo WiFi.",
       );
     }
   };
@@ -73,7 +73,6 @@ export const ScanQR = () => {
     );
   }
 
-  
   return (
     <View style={styles.cameraContainer}>
       <CameraView

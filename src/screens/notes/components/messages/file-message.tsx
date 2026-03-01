@@ -13,7 +13,12 @@ interface Props extends MessageCardProps {
   content: DocumentFile;
 }
 
-export const FileMessage = ({ content, color, timestamp }: Props) => {
+export const FileMessage = ({
+  content,
+  color,
+  timestamp,
+  synchronized,
+}: Props) => {
   const { colors } = useTheme();
 
   const handleOpenFile = async () => {
@@ -38,7 +43,7 @@ export const FileMessage = ({ content, color, timestamp }: Props) => {
       console.error("Error al abrir el archivo:", error);
       Alert.alert(
         "Error",
-        "No se pudo abrir el archivo. Asegúrate de tener un lector de PDF instalado."
+        "No se pudo abrir el archivo. Asegúrate de tener un lector de PDF instalado.",
       );
     }
   };
@@ -52,6 +57,7 @@ export const FileMessage = ({ content, color, timestamp }: Props) => {
       style={{ marginVertical: 4 }}
     >
       <MessageCard
+        synchronized={synchronized}
         color={color}
         timestamp={timestamp}
         icon={
