@@ -1,6 +1,6 @@
 export function parseTimestampToDate(
   timestamp: number,
-  locale: string = "en-US",
+  locale: string = "es",
 ): string {
   const date = new Date(timestamp);
   return date.toLocaleDateString(locale, {
